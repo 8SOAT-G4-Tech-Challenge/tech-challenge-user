@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     container_name: tech-challenger-pg
@@ -13,3 +11,30 @@ services:
       PGDATA: '/data/postgres'
     volumes:
       - ./data/pg:/data/postgres
+    networks:
+      - tech-challenger-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: tech-challenger-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3333:3333"
+    depends_on:
+        postgres:
+          condition: service_healthy
+    environment:
+      DATABASE_URL: 'postgresql://postgres:docker@postgres:5432/tech-challenger'
+      API_PORT: 3333
+    networks:
+      - tech-challenger-network
+
+networks:
+  tech-challenger-network:
+    driver: bridge
