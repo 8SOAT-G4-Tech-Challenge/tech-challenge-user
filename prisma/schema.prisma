@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+	binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+	id			String @id @default(uuid())
+	name		String
+	email		String @unique
+
+	@@map("users") // nome exato em que a tabela será criado
+}
+
+// model Product {
+// 	id 		String @id @default(uuid())
+// 	name 	String
+
+// 	orders Order[]
+
+// 	@@map("products")
+// }
+
+// model Order {
+// 	id			String @id @default(uuid())
+// 	createdAt DateTime @default(now()) @map("created_at")
+// 	updatedAt DateTime? @updatedAt @map("updated_at")
+// 	itemId String @map("product_id")
+	
+// 	item Product @relation(fields: [itemId], references: [id]) // Criação de relacionamento entre as tabelas Order -> Product
+
+// 	@@map("orders")
+// }
