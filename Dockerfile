@@ -32,8 +32,11 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 
-# Exposição da porta
+# Exposição da porta para API
 EXPOSE 3333
 
-# Comando para iniciar a aplicação
-CMD ["node", "dist/server.js"]
+# Exposição da porta para o Prisma Studio
+EXPOSE 5555
+
+# Comando para iniciar a aplicação e o Prisma Studio
+CMD ["sh", "-c", "node dist/server.js & npx prisma studio"]
