@@ -42,6 +42,7 @@ async function run() {
 
 	await app.listen({
 		port: Number(process.env.API_PORT) || 3333,
+		host: '0.0.0.0',
 	});
 
 	console.log('Documentation running at http://localhost:3333/docs');
