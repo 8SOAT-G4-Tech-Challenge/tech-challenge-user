@@ -1,6 +1,6 @@
-import { prisma } from '@src/adapter/driven/infra/lib/prisma';
+import { prisma } from '@driven/infra/lib/prisma';
 import { User } from '@models/user';
-import { UserRepository } from '@src/core/application/ports/userRepository';
+import { UserRepository } from '@ports/userRepository';
 
 // export const serviceGetUsers = async (): Promise<User[]> => {
 // 	try {
