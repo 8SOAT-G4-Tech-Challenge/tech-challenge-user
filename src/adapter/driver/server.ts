@@ -5,7 +5,7 @@ import fastifyCors from '@fastify/cors';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 
-import { errorHandler } from '@src/error-handler';
+import { errorHandler } from '@driver/error-handler';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 
 export const app = fastify();
@@ -35,7 +35,7 @@ app.register(fastifySwaggerUI, {
 app.register(routes);
 
 // Register custom error handler
-app.setErrorHandler(errorHandler);
+// app.setErrorHandler(errorHandler);
 
 async function run() {
 	await app.ready();

@@ -1,5 +1,5 @@
 # Etapa 1: Build da aplicação
-FROM node:18 AS build
+FROM node:20 AS build
 
 # Define o diretório de trabalho
 WORKDIR /app
@@ -20,7 +20,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Etapa 2: Executar a aplicação
-FROM node:18-alpine AS run
+FROM node:20-alpine AS run
 
 # Define o diretório de trabalho
 WORKDIR /app
@@ -36,4 +36,4 @@ COPY --from=build /app/prisma ./prisma
 EXPOSE 3333
 
 # Comando para iniciar a aplicação
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/adapter/driver/server.js"]

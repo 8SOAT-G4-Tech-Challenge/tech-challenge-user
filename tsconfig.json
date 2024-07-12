@@ -6,11 +6,12 @@
 		"baseUrl": "./",
 		"paths": {
 			"@src/*": ["./src/*"],
-			"@controllers/*": ["./src/controllers/*"],
-			"@lib/*": ["./src/lib/*"],
-			"@models/*": ["./src/models/*"],
-			"@routes/*": ["./src/routes/*"],
-			"@services/*": ["./src/services/*"]
+			"@driver/*": ["./src/adapter/driver/*"],
+			"@lib/*": ["src/adapter/driven/infra/lib/*"],
+			"@models/*": ["./src/core/domain/*"],
+			"@routes/*": ["./src/adapter/driver/routes/*"],
+			"@services/*": ["./src/core/application/services/*"],
+			"@ports/*": ["./src/core/application/ports/*"]
 		},
 		"resolveJsonModule": true,
 		"allowJs": true,
