@@ -19,25 +19,15 @@ model User {
 	name		String
 	email		String @unique
 
-	@@map("users") // nome exato em que a tabela será criado
+	@@map("users")
 }
 
-// model Product {
-// 	id 		String @id @default(uuid())
-// 	name 	String
+model Customer {
+	id			String @id @default(uuid())
+	name		String? @db.VarChar(255)
+	email		String? @db.VarChar(255)
+	cpf			String @unique @db.VarChar(11)
+ 	createdAt	DateTime @default(now()) @map("created_at")
 
-// 	orders Order[]
-
-// 	@@map("products")
-// }
-
-// model Order {
-// 	id			String @id @default(uuid())
-// 	createdAt DateTime @default(now()) @map("created_at")
-// 	updatedAt DateTime? @updatedAt @map("updated_at")
-// 	itemId String @map("product_id")
-	
-// 	item Product @relation(fields: [itemId], references: [id]) // Criação de relacionamento entre as tabelas Order -> Product
-
-// 	@@map("orders")
-// }
+	@@map("customers")
+}
