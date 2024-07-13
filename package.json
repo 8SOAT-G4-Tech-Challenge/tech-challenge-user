@@ -8,7 +8,10 @@
 		"dev": "tsx watch --env-file .env -r tsconfig-paths/register src/adapter/driver/server.ts | pino-pretty -C",
 		"lint": "eslint src -ext .ts --fix",
 		"db:migrate": "prisma migrate dev",
-		"db:studio": "prisma studio"
+		"db:studio": "prisma studio",
+		"db:seed": "prisma db seed",
+		"db:clean": "tsx prisma/clean.ts",
+		"db:reset": "npm run db:clean && npm run db:seed"
 	},
 	"keywords": [],
 	"author": "",
