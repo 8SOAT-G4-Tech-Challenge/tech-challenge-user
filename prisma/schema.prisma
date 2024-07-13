@@ -15,29 +15,112 @@ datasource db {
 }
 
 model User {
-	id			String @id @default(uuid())
-	name		String
-	email		String @unique
+	id				String @id @default(uuid())
+	name			String? @db.VarChar(255)
+	email			String @unique @db.VarChar(255)
+	password		String @db.VarChar(255)
+	sessionToken	String? @db.VarChar(255) @map("session_token")
+	isAdmin			Boolean @map("is_admin")
+	createdAt		DateTime @default(now()) @map("created_at")
+	updatedAt DateTime @updatedAt @map("updated_at")
 
-	@@map("users") // nome exato em que a tabela será criado
+	@@map("user")
 }
 
-// model Product {
-// 	id 		String @id @default(uuid())
-// 	name 	String
+model Customer {
+	id			String @id @default(uuid())
+	name		String? @db.VarChar(255)
+	email		String? @db.VarChar(255)
+	cpf			String @unique @db.VarChar(11)
+  createdAt	DateTime @default(now()) @map("created_at")
+	updatedAt DateTime @updatedAt @map("updated_at")
 
-// 	orders Order[]
+  orders    Order?
+	// orders    Order[] // Um Customer pode ter muitos Orders
 
-// 	@@map("products")
-// }
+	@@map("customer")
+}
 
-// model Order {
-// 	id			String @id @default(uuid())
-// 	createdAt DateTime @default(now()) @map("created_at")
-// 	updatedAt DateTime? @updatedAt @map("updated_at")
-// 	itemId String @map("product_id")
+model ProductCategory {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+	updatedAt DateTime @updatedAt @map("updated_at")
+
+  products  Product[]
+
+  @@map("product_category")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String   @db.VarChar(255)
+  url       String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("product_image")
+}
+
+model Product {
+  id          String          @id @default(uuid())
+  categoryId  String          @db.VarChar(255)
+  name        String          @db.VarChar(255)
+  amount      Decimal         @db.Money
+  description String?         @db.Text
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  category    ProductCategory @relation(fields: [categoryId], references: [id])
+  images      ProductImage[]
+  orderItems  OrderItem?
+
+  @@map("product")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String   @db.VarChar(255)
+  productId String   @db.VarChar(255) @unique
+  quantity  Int
+  amount    Decimal  @db.Money
+  details   String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_item")
+}
+
+model Order {
+  id         String   @id @default(uuid())
+  customerId String?  @db.VarChar(255) @unique
+  status     String   @db.VarChar(255)
+  amount     Decimal  @db.Money
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  customer   Customer? @relation(fields: [customerId], references: [id]) // Relacionamento opcional com Customer
+  items      OrderItem[]
+  payment    PaymentOrder? // Um Order tem um PaymentOrder
+
+  @@map("order")
+}
+
+model PaymentOrder {
+  id        String   @id @default(uuid())
+  orderId   String   @db.VarChar(255) @unique
+  status    String   @db.VarChar(255)
+  paidAt    DateTime?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  order     Order    @relation(fields: [orderId], references: [id]) // Um PaymentOrder pertence a um Order
 	
-// 	item Product @relation(fields: [itemId], references: [id]) // Criação de relacionamento entre as tabelas Order -> Product
 
-// 	@@map("orders")
-// }
+  @@map("payment_order")
+}
