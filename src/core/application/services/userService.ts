@@ -1,25 +1,21 @@
-import { prisma } from '@driven/infra/lib/prisma';
 import { User } from '@models/user';
 import { UserRepository } from '@ports/userRepository';
-
-// export const serviceGetUsers = async (): Promise<User[]> => {
-// 	try {
-// 		const users = await prisma.user.findMany({
-// 			select: {
-// 				id: true,
-// 				name: true,
-// 				email: true,
-// 			},
-// 		});
-// 		return users;
-// 	} catch (error) {
-// 		throw new Error('Error fetching users from the database');
-// 	}
-// };
+import createError from 'http-errors';
 
 export class UserService {
 	constructor(private readonly userRepository: UserRepository) { }
-	async getUserByCpf(cpf: string): Promise<User> {
-        return this.userRepository.getUserByCpf(cpf);
-    }
+
+	async getUsers(): Promise<User[]> {
+		try {
+			const costumers = await this.userRepository.getUsers();
+			return costumers;
+		} catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else {
+                console.error(error);
+                throw new createError.InternalServerError(`An unexpected error occurred while fetching users from the database: ${error.message}`);
+            }
+		}
+	}
 }

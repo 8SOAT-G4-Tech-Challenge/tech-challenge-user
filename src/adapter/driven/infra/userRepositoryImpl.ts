@@ -1,22 +1,21 @@
-import { UserRepository } from '@ports/userRepository';
-import { User } from '@models/user';
 import { prisma } from '@driven/infra/lib/prisma';
+import { User } from '@models/user';
+import { UserRepository } from '@ports/userRepository';
 
 export class UserRepositoryImpl implements UserRepository {
-    async getUserByCpf(cpf: string): Promise<User> {
-        try {
-            const user = await prisma.user.findUnique({
-                where: {
-                    cpf: cpf,
-                },
-            });
-            if (user) {
-                return user;
-            } else {
-                throw new Error('Not found user: ' + cpf);
-            }
-        } catch (error) {
-            throw new Error('Error fetching users from the database');
-        }
+    async getUsers(): Promise<User[]> {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                password: false,
+                sessionToken: false,
+                isAdmin: true,
+                createdAt: true
+            },
+        });
+        
+        return users;
     }
 }

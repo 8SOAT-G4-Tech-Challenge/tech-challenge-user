@@ -13,8 +13,10 @@ export class CustomerRepositoryImpl implements CustomerRepository {
                 createdAt: true,
             },
         });
+        
         return costumers;
     }
+
     async getCustomerById(id: string): Promise<Customer> {
         const customer = await prisma.customer.findUnique({
             where: { id },
@@ -29,6 +31,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
 
         return customer;
     }
+
     async getCustomerByCpf(cpf: string): Promise<Customer> {
         const customer = await prisma.customer.findFirst({
             where: { cpf },
@@ -40,6 +43,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
                 createdAt: true,
             },
         });
+
         return customer;
     }
 
@@ -52,6 +56,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
                 createdAt: new Date(),
             },
         });
+
         return createdCustomer;
     }
 }

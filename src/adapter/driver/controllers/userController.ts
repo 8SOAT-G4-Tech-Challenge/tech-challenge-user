@@ -1,18 +1,17 @@
-import { BadRequest } from '@exceptions/badRequestException';
+import { User } from '@prisma/client';
 import { UserService } from '@services/userService';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { handleError } from '../utils/error-handler';
 
 export class UserController {
 	constructor(private readonly userService: UserService) { }
-	async getUserByCpf(req: FastifyRequest, res: FastifyReply) {
+	
+	async getUsers(req: FastifyRequest, reply: FastifyReply) {
 		try {
-			const users = await this.userService.getUserByCpf('12345698710');
-			if (!users) {
-				throw new BadRequest('No users found');
-			}
-			res.send(users);
-		} catch (err) {
-			res.send(err); // Errors will be handled by the global error handler
+			const customers: User[] = await this.userService.getUsers();
+			reply.code(201).send(customers);
+		} catch (error) {
+			handleError(reply, error);
 		}
 	}
 }

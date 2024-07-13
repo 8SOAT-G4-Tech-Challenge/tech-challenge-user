@@ -1,10 +1,10 @@
-import { FastifyInstance } from 'fastify';
-import { UserController } from '@controllers/userController';
 import { CustomerController } from '@controllers/customerController';
-import { UserService } from '@services/userService';
-import { CustomerService } from '@services/customerService';
-import { UserRepositoryImpl } from '@driven/infra/userRepositoryImpl';
+import { UserController } from '@controllers/userController';
 import { CustomerRepositoryImpl } from '@driven/infra/customerRepositoryImpl';
+import { UserRepositoryImpl } from '@driven/infra/userRepositoryImpl';
+import { CustomerService } from '@services/customerService';
+import { UserService } from '@services/userService';
+import { FastifyInstance } from 'fastify';
 
 const userRepository = new UserRepositoryImpl();
 const customerRepositoryImpl = new CustomerRepositoryImpl();
@@ -16,9 +16,8 @@ const userController = new UserController(userService);
 const customerController = new CustomerController(customerService);
 
 export const routes = async (fastify: FastifyInstance) => {
-	fastify.get('/users/:cpf', userController.getUserByCpf.bind(userController));
+	fastify.get('/users', userController.getUsers.bind(userController));
 	fastify.get('/customers', customerController.getCustomers.bind(customerController));
-	fastify.get('/customer/id/:id', customerController.getCustomerById.bind(customerController));
-	fastify.get('/customer/cpf/:cpf', customerController.getCustomerByCpf.bind(customerController));
+	fastify.get('/customers/property', customerController.getCustomerByProperty.bind(customerController));
 	fastify.post('/customers', customerController.createCustomer.bind(customerController));
 };
