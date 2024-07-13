@@ -18,8 +18,8 @@ model User {
 	id			String @id @default(uuid())
 	name		String
 	email		String @unique
-
-	@@map("users")
+	cpf 		String @unique
+	@@map("users") // nome exato em que a tabela será criado
 }
 
 model Customer {
@@ -31,3 +31,23 @@ model Customer {
 
 	@@map("customers")
 }
+
+// model Product {
+// 	id 		String @id @default(uuid())
+// 	name 	String
+
+// 	orders Order[]
+
+// 	@@map("products")
+// }
+
+// model Order {
+// 	id			String @id @default(uuid())
+// 	createdAt DateTime @default(now()) @map("created_at")
+// 	updatedAt DateTime? @updatedAt @map("updated_at")
+// 	itemId String @map("product_id")
+	
+// 	item Product @relation(fields: [itemId], references: [id]) // Criação de relacionamento entre as tabelas Order -> Product
+
+// 	@@map("orders")
+// }

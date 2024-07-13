@@ -1,9 +1,9 @@
-export class BadRequest extends Error {
+export class BadRequestException extends Error {
 	statusCode: number;
 
 	constructor(message: string) {
 		super(message);
-		this.name = 'BadRequestError';
+		this.name = 'BadRequestException';
 		this.statusCode = 400;
 	}
 }

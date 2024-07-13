@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "tsup src",
-		"dev": "tsx watch --env-file .env -r tsconfig-paths/register src/server.ts",
+		"dev": "tsx watch --env-file .env -r tsconfig-paths/register src/adapter/driver/server.ts",
 		"lint": "eslint src -ext .ts --fix",
 		"db:migrate": "prisma migrate dev",
 		"db:studio": "prisma studio"
