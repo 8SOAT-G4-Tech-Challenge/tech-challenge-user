@@ -1,7 +1,8 @@
 import { User } from '@prisma/client';
 import { UserService } from '@services/userService';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { handleError } from '../utils/error-handler';
+import { handleError } from '@driver/utils/errorHandler';
+import { StatusCodes } from 'http-status-codes';
 
 export class UserController {
 	constructor(private readonly userService: UserService) { }
@@ -9,9 +10,9 @@ export class UserController {
 	async getUsers(req: FastifyRequest, reply: FastifyReply) {
 		try {
 			const customers: User[] = await this.userService.getUsers();
-			reply.code(201).send(customers);
+			reply.code(StatusCodes.CREATED).send(customers);
 		} catch (error) {
-			handleError(reply, error);
+			handleError(req, reply, error);
 		}
-	}
+	};
 }

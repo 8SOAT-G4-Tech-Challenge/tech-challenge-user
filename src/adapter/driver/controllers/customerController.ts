@@ -1,7 +1,8 @@
 import { Customer } from '@prisma/client';
 import { CustomerService } from '@services/customerService';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { handleError } from '../utils/error-handler';
+import { handleError } from '../utils/errorHandler';
+import { StatusCodes } from 'http-status-codes'
 
 export class CustomerController {
 	constructor(private readonly customerService: CustomerService) { }
@@ -9,7 +10,7 @@ export class CustomerController {
 	async getCustomers(req: FastifyRequest, reply: FastifyReply) {
 		try {
 			const customers: Customer[] = await this.customerService.getCustomers();
-			reply.code(201).send(customers);
+			reply.code(StatusCodes.CREATED).send(customers);
 		} catch (error) {
 			handleError(reply, error);
 		}
@@ -20,20 +21,20 @@ export class CustomerController {
 			const { id, cpf } = req.query as { id?: string; cpf?: string };
 	  
 			if (!(id || cpf)) {
-				return reply.code(400).send({ error: 'Bad Request', message: 'Please provide either an ID or a CPF to search for a customer.' });
+				return reply.code(StatusCodes.BAD_REQUEST).send({ error: 'Bad Request', message: 'Please provide either an ID or a CPF to search for a customer.' });
 			}
 		  
 			if (id && cpf) {
-				return reply.code(400).send({ error: 'Bad Request', message: 'Please provide either an ID or a CPF, not both.' });
+				return reply.code(StatusCodes.BAD_REQUEST).send({ error: 'Bad Request', message: 'Please provide either an ID or a CPF, not both.' });
 			}
 	  
 			const searchParam = id ? { id } : { cpf };
     		const customer = await this.customerService.getCustomerByProperty(searchParam);
 	  
 			if (customer) {
-				reply.code(200).send(customer);
+				reply.code(StatusCodes.OK).send(customer);
 			} else {
-				reply.code(404).send({ error: 'Not Found', message: `Customer with ${id ? 'ID' : 'CPF'} ${id || cpf} not found` });
+				reply.code(StatusCodes.NOT_FOUND).send({ error: 'Not Found', message: `Customer with ${id ? 'ID' : 'CPF'} ${id || cpf} not found` });
 			}
 		} catch (error) {
 			handleError(reply, error);
@@ -46,12 +47,9 @@ export class CustomerController {
 
 			const createdCustomer: Customer = await this.customerService.createCustomer({ name, email, cpf });
 
-			reply.code(201).send(createdCustomer);
+			reply.code(StatusCodes.CREATED).send(createdCustomer);
 		} catch (error) {
-			handleError(reply, error);
+			handleError(req, reply, error);
 		}
 	}
-};
-
-
-
+}

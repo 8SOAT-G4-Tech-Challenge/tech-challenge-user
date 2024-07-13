@@ -6,7 +6,8 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
-import { errorHandler } from './utils/error-handler';
+import { errorHandler } from './utils/errorHandler';
+import logger from '@driver/utils/logger'
 
 export const app = fastify();
 
@@ -44,7 +45,7 @@ async function run() {
 		host: '0.0.0.0',
 	});
 
-	console.log('Documentation running at http://localhost:3333/docs');
+	logger.info('Documentation running at http://localhost:3333/docs');
 }
 
 run();
