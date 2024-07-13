@@ -1,6 +1,6 @@
 export interface ProductCategory {
-    id: String;
-	name: String;
+    id: string;
+	name: string;
 	createdAt: Date;
 	updatedAt: Date;
 }

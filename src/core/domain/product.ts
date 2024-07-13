@@ -1,10 +1,10 @@
 import { ProductCategory } from "@models/productCategory"
 
 export interface Product {
-    id: String;
-	name: String;
+    id: string;
+	name: string;
 	amount: number;
-	descrption: String;
+	descrption: string;
 	category: ProductCategory;
 	createdAt: Date;
 	updatedAt: Date;
