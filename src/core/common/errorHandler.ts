@@ -15,7 +15,6 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
 
 	if (error instanceof ZodError) {
 		responseError.message = 'Error during validation';
-		// error.flatten().fieldErrors,
 	}
 
 	if (error instanceof BaseException) {
@@ -27,12 +26,13 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
 };
 
 export function handleError(req: FastifyRequest, reply: FastifyReply, error: any, message?: string): void {
-	let responseError = {
+	const responseError = {
 		path: req.url,
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
 		message: message ? message : error.message,
 		details: []
 	};
+
 	if (error instanceof BaseException) {
 		responseError.message = error.message;
 		responseError.status = error.statusCode;

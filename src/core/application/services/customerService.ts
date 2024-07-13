@@ -31,7 +31,7 @@ export class CustomerService {
 	async createCustomer(customerData: Customer): Promise<Customer> {
 		try {
 			if (!customerData.name && !customerData.email) {
-				throw new createError.BadRequest('At least one of the fields "name" or "email" must be provided.');
+				throw new InvalidCustomerException('At least one of the fields "name" or "email" must be provided.');
 			}
 			return this.customerRepository.createCustomer(customerData);
 		} catch (error) {

@@ -1,4 +1,3 @@
-import { error } from "console";
 import { BaseException } from "@driver/exceptions/baseException";
 import { StatusCodes } from "http-status-codes";
 

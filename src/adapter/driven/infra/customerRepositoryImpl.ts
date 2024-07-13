@@ -11,6 +11,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
                 email: true,
                 cpf: true,
                 createdAt: true,
+                updatedAt: true,
             },
         });
         
@@ -26,6 +27,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
                 email: true,
                 cpf: true,
                 createdAt: true,
+                updatedAt: true,
             },
         });
 
@@ -41,6 +43,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
                 email: true,
                 cpf: true,
                 createdAt: true,
+                updatedAt: true,
             },
         });
 
@@ -49,12 +52,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
 
     async createCustomer(customer: Customer): Promise<Customer> {
         const createdCustomer = await prisma.customer.create({
-            data: {
-                name: customer.name,
-                email: customer.email,
-                cpf: customer.cpf,
-                createdAt: new Date(),
-            },
+            data: customer
         });
 
         return createdCustomer;

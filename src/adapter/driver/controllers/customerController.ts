@@ -1,18 +1,22 @@
 import { Customer } from '@prisma/client';
 import { CustomerService } from '@services/customerService';
+import { handleError } from '@src/core/common/errorHandler';
+import logger from '@src/core/common/logger';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { handleError } from '../utils/errorHandler';
-import { StatusCodes } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes';
 
 export class CustomerController {
 	constructor(private readonly customerService: CustomerService) { }
 
 	async getCustomers(req: FastifyRequest, reply: FastifyReply) {
 		try {
+			logger.info('Listing customers');
 			const customers: Customer[] = await this.customerService.getCustomers();
 			reply.code(StatusCodes.CREATED).send(customers);
 		} catch (error) {
-			handleError(reply, error);
+			const errorMessage = `Unexpected error when listing for customers`;
+            logger.error(`${errorMessage}: ${error}`);
+            handleError(req, reply, error);
 		}
 	}
 
@@ -29,27 +33,29 @@ export class CustomerController {
 			}
 	  
 			const searchParam = id ? { id } : { cpf };
+			logger.info(`Listing customers by ${id ? 'ID' : 'CPF'}`);
     		const customer = await this.customerService.getCustomerByProperty(searchParam);
 	  
-			if (customer) {
-				reply.code(StatusCodes.OK).send(customer);
-			} else {
-				reply.code(StatusCodes.NOT_FOUND).send({ error: 'Not Found', message: `Customer with ${id ? 'ID' : 'CPF'} ${id || cpf} not found` });
-			}
+			customer 
+				? reply.code(StatusCodes.OK).send(customer) 
+				: reply.code(StatusCodes.NOT_FOUND).send({ error: 'Not Found', message: `Customer with ${id ? 'ID' : 'CPF'} ${id || cpf} not found` });
 		} catch (error) {
-			handleError(reply, error);
+			const errorMessage = `Unexpected error when listing for customer by property`;
+            logger.error(`${errorMessage}: ${error}`);
+            handleError(req, reply, error);
 		}
 	};
 
 	async createCustomer(req: FastifyRequest, reply: FastifyReply) {
 		try {
+			logger.info('Creating customer');
 			const { name, email, cpf }: Customer = req.body as Customer;
-
 			const createdCustomer: Customer = await this.customerService.createCustomer({ name, email, cpf });
-
 			reply.code(StatusCodes.CREATED).send(createdCustomer);
 		} catch (error) {
-			handleError(req, reply, error);
+			const errorMessage = `Unexpected when creating for customer`;
+            logger.error(`${errorMessage}: ${error}`);
+            handleError(req, reply, error);
 		}
 	}
 }

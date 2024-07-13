@@ -1,5 +1,5 @@
-import { ProductCategory } from "@domains/productCategory"
-import { Product } from "@domains/product"
+import { Product } from "@src/core/domain/product";
+import { ProductCategory } from "@src/core/domain/productCategory";
 
 export interface ProductRepository {
     getProducts(): Promise<Product[]>;

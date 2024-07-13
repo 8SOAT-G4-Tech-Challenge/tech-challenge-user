@@ -1,7 +1,8 @@
 import { User } from '@prisma/client';
 import { UserService } from '@services/userService';
+import { handleError } from '@src/core/common/errorHandler';
+import logger from '@src/core/common/logger';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { handleError } from '@driver/utils/errorHandler';
 import { StatusCodes } from 'http-status-codes';
 
 export class UserController {
@@ -9,10 +10,13 @@ export class UserController {
 	
 	async getUsers(req: FastifyRequest, reply: FastifyReply) {
 		try {
-			const customers: User[] = await this.userService.getUsers();
-			reply.code(StatusCodes.CREATED).send(customers);
+			logger.info('Listing users');
+			const users: User[] = await this.userService.getUsers();
+			reply.code(StatusCodes.CREATED).send(users);
 		} catch (error) {
-			handleError(req, reply, error);
+			const errorMessage = `Unexpected error when listing for users`;
+            logger.error(`${errorMessage}: ${error}`);
+            handleError(req, reply, error);
 		}
 	};
 }

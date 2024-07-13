@@ -1,13 +1,11 @@
-import { routes } from '@routes/index';
-import fastify from 'fastify';
-
 import fastifyCors from '@fastify/cors';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
-
+import { routes } from '@routes/index';
+import { errorHandler } from '@src/core/common/errorHandler';
+import logger from '@src/core/common/logger';
+import fastify from 'fastify';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
-import { errorHandler } from './utils/errorHandler';
-import logger from '@driver/utils/logger'
 
 export const app = fastify();
 

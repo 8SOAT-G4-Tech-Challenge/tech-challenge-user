@@ -12,7 +12,8 @@ export class UserRepositoryImpl implements UserRepository {
                 password: false,
                 sessionToken: false,
                 isAdmin: true,
-                createdAt: true
+                createdAt: true,
+                updatedAt: true,
             },
         });
         

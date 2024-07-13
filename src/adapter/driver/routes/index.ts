@@ -9,7 +9,6 @@ import { UserService } from '@services/userService';
 import { ProductService } from '@services/productService';
 import { FastifyInstance } from 'fastify';
 
-
 const userRepository = new UserRepositoryImpl();
 const customerRepository = new CustomerRepositoryImpl();
 const productRepository = new ProductRepositoryImpl();

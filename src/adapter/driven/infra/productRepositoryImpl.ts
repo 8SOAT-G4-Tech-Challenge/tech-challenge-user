@@ -1,10 +1,9 @@
 import { prisma } from '@driven/infra/lib/prisma';
 import { ProductRepository } from '@ports/productRepository';
-import { ProductCategory } from '@domains/productCategory';
-import { Product } from '@domains/product';
+import { Product } from '@src/core/domain/product';
+import { ProductCategory } from '@src/core/domain/productCategory';
 
 export class ProductRepositoryImpl implements ProductRepository {
-
     async getProducts(): Promise<Product[]> {
         return prisma.product.findMany({
             select: {
@@ -19,12 +18,6 @@ export class ProductRepositoryImpl implements ProductRepository {
         })
     };
 
-    async createProductCategory(productCategory: ProductCategory): Promise<ProductCategory> {
-        return prisma.productCategory.create({
-            data: productCategory,
-        });
-    };
-
     async getProductCategories(): Promise<ProductCategory[]> {
         return prisma.productCategory.findMany({
             select: {
@@ -33,6 +26,12 @@ export class ProductRepositoryImpl implements ProductRepository {
                 createdAt: true,
                 updatedAt: true,
             }
+        });
+    };
+
+    async createProductCategory(productCategory: ProductCategory): Promise<ProductCategory> {
+        return prisma.productCategory.create({
+            data: productCategory,
         });
     };
 }

@@ -1,7 +1,6 @@
 import { ProductRepository } from '@ports/productRepository';
-import { Product } from 'models/product';
-import { ProductCategory } from 'models/productCategory';
 import { productCategorySchema, ProductCategoryDto } from '@driver/schemas/productCategorySchema';
+import { Product, ProductCategory } from '@prisma/client';
 
 export class ProductService {
     constructor(private readonly productRepository: ProductRepository) { }
@@ -10,12 +9,12 @@ export class ProductService {
         return []
     }
 
+    async getProductCategories(): Promise<ProductCategory[]> {
+        return this.productRepository.getProductCategories();
+    }
+
     async createProductCategory(productCategoryDto: ProductCategoryDto): Promise<ProductCategory> {
         productCategoryDto = productCategorySchema.parse(productCategoryDto);
         return this.productRepository.createProductCategory({...productCategoryDto})
-    }
-
-    async getProductCategories(): Promise<ProductCategory[]> {
-        return this.productRepository.getProductCategories();
     }
 }
