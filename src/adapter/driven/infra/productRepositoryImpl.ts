@@ -10,7 +10,7 @@ export class ProductRepositoryImpl implements ProductRepository {
                 id: true,
                 name: true,
                 amount: true,
-                descrption: true,
+                description: true,
                 category: true,
                 createdAt: true,
                 updatedAt: true,
