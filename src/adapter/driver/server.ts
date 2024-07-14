@@ -7,6 +7,7 @@ import { errorHandler } from '@src/core/common/errorHandler';
 import logger from '@src/core/common/logger';
 import fastify from 'fastify';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
+import helmet from '@fastify/helmet';
 
 export const app = fastify();
 
@@ -32,6 +33,25 @@ app.register(fastifySwaggerUI, {
 });
 
 app.register(fastifyMultipart);
+
+app.register(helmet, {
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: [],
+        },
+    },
+    frameguard: {
+        action: 'deny',
+    },
+    referrerPolicy: {
+        policy: 'no-referrer',
+    },
+    xssFilter: true,
+    noSniff: true,
+});
 
 app.register(routes);
 
