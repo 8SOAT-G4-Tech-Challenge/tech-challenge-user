@@ -3,18 +3,18 @@ import { productCategorySchema, ProductCategoryDto } from '@driver/schemas/produ
 import { Product, ProductCategory } from '@prisma/client';
 
 export class ProductService {
-    constructor(private readonly productRepository: ProductRepository) { }
+	constructor(private readonly productRepository: ProductRepository) { }
 
-    async getProducts(): Promise<Product[]> {
-        return []
-    }
+	async getProducts(): Promise<Product[]> {
+		return [];
+	}
 
-    async getProductCategories(): Promise<ProductCategory[]> {
-        return this.productRepository.getProductCategories();
-    }
+	async getProductCategories(): Promise<ProductCategory[]> {
+		return this.productRepository.getProductCategories();
+	}
 
-    async createProductCategory(productCategoryDto: ProductCategoryDto): Promise<ProductCategory> {
-        productCategoryDto = productCategorySchema.parse(productCategoryDto);
-        return this.productRepository.createProductCategory({...productCategoryDto})
-    }
+	async createProductCategory(productCategoryDto: ProductCategoryDto): Promise<ProductCategory> {
+		productCategoryDto = productCategorySchema.parse(productCategoryDto);
+		return this.productRepository.createProductCategory({ ...productCategoryDto });
+	}
 }

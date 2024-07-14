@@ -161,13 +161,13 @@ async function main() {
 				customer: {
 					connect: { id: customer1.id },
 				},
-				status: 'Pendente',
+				status: 'received',
 				amount: order1Amount,
 			},
 		}),
 		prisma.order.create({
 			data: {
-				status: 'Pendente',
+				status: 'received',
 				amount: order2Amount,
 			},
 		}),
@@ -176,7 +176,7 @@ async function main() {
 				customer: {
 					connect: { id: customer2.id },
 				},
-				status: 'Pendente',
+				status: 'received',
 				amount: order3Amount,
 			},
 		}),
@@ -241,7 +241,7 @@ async function main() {
 				order: {
 					connect: { id: order2.id },
 				},
-				status: 'Pendente',
+				status: 'received',
 			},
 		}),
 		prisma.paymentOrder.create({
@@ -249,7 +249,7 @@ async function main() {
 				order: {
 					connect: { id: order3.id },
 				},
-				status: 'Pendente',
+				status: 'received',
 			},
 		}),
 	]);

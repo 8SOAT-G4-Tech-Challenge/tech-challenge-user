@@ -1,10 +1,10 @@
-import { ProductCategory } from "@models/productCategory"
+import { ProductCategory } from '@models/productCategory';
 
 export interface Product {
     id: string;
 	name: string;
 	amount: number;
-	descrption: string;
+	description: string | null;
 	category: ProductCategory;
 	createdAt: Date;
 	updatedAt: Date;
