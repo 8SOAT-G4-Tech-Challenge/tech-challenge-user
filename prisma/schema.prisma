@@ -124,6 +124,5 @@ model PaymentOrder {
 
   order     Order    @relation(fields: [orderId], references: [id]) // Um PaymentOrder pertence a um Order
 	
-
   @@map("payment_order")
 }

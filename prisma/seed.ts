@@ -232,7 +232,7 @@ async function main() {
 				order: {
 					connect: { id: order1.id },
 				},
-				status: 'Pago',
+				status: 'paid',
 				paidAt: new Date(),
 			},
 		}),
