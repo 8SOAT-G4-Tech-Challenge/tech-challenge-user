@@ -1,1 +1,1 @@
-export type OrderStatusType = 'received' | 'preparation' | 'ready' | 'finished' | 'canceled';
+export type OrderStatusType = 'created' | 'received' | 'preparation' | 'ready' | 'finished' | 'canceled';
