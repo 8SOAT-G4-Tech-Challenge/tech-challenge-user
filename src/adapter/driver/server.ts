@@ -1,5 +1,4 @@
 import fastify from 'fastify';
-import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 
 import { errorHandler } from '@common/errorHandler';
 import logger from '@common/logger';
@@ -27,7 +26,6 @@ app.register(fastifySwagger, {
 			version: '1.0.0',
 		},
 	},
-	transform: jsonSchemaTransform,
 });
 
 app.register(fastifySwaggerUI, {
