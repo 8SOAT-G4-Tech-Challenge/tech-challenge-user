@@ -1,5 +1,9 @@
+import logger from '@common/logger';
+import { Order } from '@domain/order';
+import { OrderQueryParams } from '@domain/types/order';
+import { OrderStatusEnum } from '@domain/types/orderStatusType';
+import { InvalidOrderStatusException } from '@driver/exceptions/invalidOrderStatusException';
 import { IOrderRepository } from '@ports/orderRepository';
-import { Order } from '@src/core/domain/order';
 
 export class OrderService {
 	orderRepository: IOrderRepository;
@@ -8,9 +12,21 @@ export class OrderService {
 		this.orderRepository = _orderRepository;
 	}
 
-	async getOrders(): Promise<Order[]> {
-		const orders = await this.orderRepository.getOrders();
+	async getOrders({ status }: OrderQueryParams): Promise<Order[]> {
+		if (status && Object.values(OrderStatusEnum).includes(status)) {
+			logger.info(`Searching orders by status: ${status}`);
+			const orders = await this.orderRepository.getOrdersByStatus(status);
+			return orders;
+		}
 
+		if (status && !Object.values(OrderStatusEnum).includes(status)) {
+			throw new InvalidOrderStatusException(
+				`Error listing orders by status. Invalid status: ${status}`
+			);
+		}
+
+		logger.info('Searching all orders');
+		const orders = await this.orderRepository.getOrders();
 		return orders;
 	}
 }

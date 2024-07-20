@@ -2,6 +2,7 @@ import { OrderStatusType } from '@domain/types/orderStatusType';
 import { prisma } from '@driven/infra/lib/prisma';
 import { Order } from '@models/order';
 import { IOrderRepository } from '@ports/orderRepository';
+import logger from '@src/core/common/logger';
 
 export class OrderRepositoryImpl implements IOrderRepository {
 	async getOrders(): Promise<Order[]> {
@@ -9,7 +10,12 @@ export class OrderRepositoryImpl implements IOrderRepository {
 			include: {
 				items: {
 					include: {
-						product: true,
+						product: {
+							include: {
+								category: true,
+								images: true,
+							},
+						},
 					},
 				},
 				customer: true,
@@ -17,10 +23,42 @@ export class OrderRepositoryImpl implements IOrderRepository {
 			},
 		});
 
-		return orders.map((order) => ({
+		const ordersParsed = orders.map((order) => ({
 			...order,
 			amount: parseFloat(order.amount.toString()),
-			status: order.status as OrderStatusType,
 		}));
+		logger.info(`Orders found: ${JSON.stringify(ordersParsed)}`);
+
+		return ordersParsed;
+	}
+
+	async getOrdersByStatus(status: OrderStatusType): Promise<Order[]> {
+		const orders = await prisma.order.findMany({
+			where: {
+				status,
+			},
+			include: {
+				items: {
+					include: {
+						product: {
+							include: {
+								category: true,
+								images: true,
+							},
+						},
+					},
+				},
+				customer: true,
+				payment: true,
+			},
+		});
+
+		const ordersParsed = orders.map((order) => ({
+			...order,
+			amount: parseFloat(order.amount.toString()),
+		}));
+		logger.info(`Orders found: ${JSON.stringify(ordersParsed)}`);
+
+		return ordersParsed;
 	}
 }

@@ -4,7 +4,7 @@ export const OrderStatusEnum = {
 	preparation: 'preparation',
 	ready: 'ready',
 	finished: 'finished',
-	canceled: "canceled'",
+	canceled: 'canceled',
 } as const;
 
 export type OrderStatusType = keyof typeof OrderStatusEnum;
