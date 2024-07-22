@@ -1,4 +1,4 @@
-# FIAP Tech-Challenge 8SOAT - Fase 01 - Grupo ??
+# FIAP Tech-Challenge 8SOAT - Fase 01
 
 ## Objetivo do Projeto
 
