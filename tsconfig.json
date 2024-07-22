@@ -14,7 +14,10 @@
 			"@dtos/*": ["./src/adapter/driver/dtos/*"],
 			"@controllers/*": ["./src/adapter/driver/controllers/*"],
 			"@services/*": ["./src/core/application/services/*"],
-			"@ports/*": ["./src/core/application/ports/*"]
+			"@ports/*": ["./src/core/application/ports/*"],
+			"@application/*": ["./src/core/application/*"],
+			"@domain/*": ["./src/core/domain/*"],
+			"@common/*": ["./src/core/common/*"]
 		},
 		"resolveJsonModule": true,
 		"allowJs": true,
@@ -24,7 +27,7 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"types": ["node", "@prisma/client"],
-		"useUnknownInCatchVariables": false,
+		"useUnknownInCatchVariables": false
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "**/*.spec.ts"]
