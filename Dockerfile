@@ -34,7 +34,9 @@ COPY --from=build /app/package-lock.json ./package-lock.json
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/src ./src
+
+# Define as variáveis de ambiente necessárias
+ENV DATABASE_URL=postgresql://postgres:docker@postgres:5432/tech-challenger
 
 # Exposição da porta para API
 EXPOSE 3333
@@ -43,4 +45,4 @@ EXPOSE 3333
 EXPOSE 5555
 
 # Comando para criar banco de dados, iniciar a aplicação e o Prisma Studio
-CMD ["sh", "-c", "npx prisma migrate deploy & npx prisma db seed & node dist/adapter/driver/server.js & npx prisma studio"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/adapter/driver/server.js & npx prisma studio"]
