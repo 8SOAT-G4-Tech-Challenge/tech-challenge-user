@@ -1,13 +1,24 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
+import * as fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
+import * as path from 'path';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 
 import logger from '@common/logger';
 import { handleError } from '@driver/errorHandler';
+import { MultipartFile } from '@fastify/multipart';
 import { ProductImageService } from '@services/productImageService';
 import {
 	CreateProductImageParams,
 	GetProductImageByIdParams,
 } from '@src/core/application/ports/input/productImage';
+
+const pump = promisify(pipeline);
+
+interface ProductImageID {
+	value: string;
+}
 
 export class ProductImageController {
 	private readonly productImageService;
@@ -64,10 +75,43 @@ export class ProductImageController {
 
 	async createProductImage(req: FastifyRequest, reply: FastifyReply) {
 		try {
-			logger.info(`Creating product image: ${JSON.stringify(req.body)}`);
-			const productImage = await this.productImageService.createProductImage(
-				req.body as CreateProductImageParams,
+			logger.info('Uploading file');
+			const data = (await req.file()) as MultipartFile;
+			const { productId } = data.fields;
+
+			if (!data || !productId) {
+				throw new Error('Invalid parameters to product image create');
+			}
+
+			if (data.filename === undefined) {
+				throw new Error('File not found');
+			}
+
+			const productIdObj = productId as ProductImageID;
+
+			const uploadDir = path.join(
+				__dirname,
+				`/../../../uploads/${productIdObj.value}`,
 			);
+			if (!fs.existsSync(uploadDir)) {
+				fs.mkdirSync(uploadDir, { recursive: true });
+			}
+
+			const timestamp = Date.now();
+			const newFilename = `${timestamp}-${data.filename}`;
+			const filePath = path.join(uploadDir, newFilename);
+			await pump(data.file, fs.createWriteStream(filePath));
+
+			const productImageUrl = `/uploads/${productIdObj.value}/${newFilename}`;
+
+			logger.info(
+				`Creating product image with productId: ${productIdObj.value} and URL: ${productImageUrl}`,
+			);
+			const productImage = await this.productImageService.createProductImage({
+				url: productImageUrl,
+				productId: productIdObj.value,
+			});
+
 			reply.code(StatusCodes.CREATED).send(productImage);
 		} catch (error) {
 			const errorMessage = 'Unexpected when creating for product category';
@@ -82,7 +126,23 @@ export class ProductImageController {
 	) {
 		try {
 			logger.info('Deleting product image by id');
-			await this.productImageService.deleteProductImageById(req?.params);
+			const productImage = await this.productImageService.getProductImageById(
+				req.params,
+			);
+			if (!productImage) {
+				reply
+					.code(StatusCodes.NOT_FOUND)
+					.send({ message: 'Product image not found' });
+				return;
+			}
+
+			await this.productImageService.deleteProductImageById(req.params);
+
+			const filePath = path.join(__dirname, `/../../../${productImage.url}`);
+			if (fs.existsSync(filePath)) {
+				fs.unlinkSync(filePath);
+			}
+
 			reply
 				.code(StatusCodes.OK)
 				.send({ message: 'Product image successfully deleted' });
@@ -100,7 +160,32 @@ export class ProductImageController {
 	) {
 		try {
 			logger.info('Deleting product image by product id');
-			await this.productImageService.deleteProductImageByProductId(req?.params);
+
+			const { id: productId } = req.params;
+			const productImages =
+				await this.productImageService.getProductImageByProductId({
+					id: productId,
+				});
+
+			if (!productImages.length) {
+				reply.code(StatusCodes.NOT_FOUND).send({
+					message: 'No product images found for the given product id',
+				});
+				return;
+			}
+
+			await this.productImageService.deleteProductImageByProductId(req.params);
+
+			const uploadDir = path.join(__dirname, `/../../../uploads/${productId}`);
+
+			if (fs.existsSync(uploadDir)) {
+				fs.readdirSync(uploadDir).forEach((file) => {
+					fs.unlinkSync(path.join(uploadDir, file));
+				});
+
+				fs.rmdirSync(uploadDir);
+			}
+
 			reply
 				.code(StatusCodes.OK)
 				.send({ message: 'Product images successfully deleted' });
@@ -120,12 +205,60 @@ export class ProductImageController {
 		reply: FastifyReply,
 	) {
 		try {
-			logger.info('Updating product image', req?.body?.id);
-			const productImage = await this.productImageService.updateProductImage({
-				...req.body,
-				id: req?.params?.id,
-			} as CreateProductImageParams);
-			reply.code(StatusCodes.OK).send(productImage);
+			logger.info('Updating product image', req?.params?.id);
+
+			const currentImage = await this.productImageService.getProductImageById(
+				req.params,
+			);
+			if (!currentImage) {
+				reply
+					.code(StatusCodes.NOT_FOUND)
+					.send({ message: 'Product image not found' });
+				return;
+			}
+
+			const data = (await req.file()) as MultipartFile;
+			let productImageUrl = currentImage.url;
+
+			if (data && data.filename !== undefined) {
+				const { productId } = currentImage;
+
+				if (!productId) {
+					throw new Error('Invalid parameters to product image update');
+				}
+
+				const uploadDir = path.join(
+					__dirname,
+					`/../../../uploads/${productId}`,
+				);
+				if (!fs.existsSync(uploadDir)) {
+					fs.mkdirSync(uploadDir, { recursive: true });
+				}
+
+				const timestamp = Date.now();
+				const newFilename = `${timestamp}-${data.filename}`;
+				const filePath = path.join(uploadDir, newFilename);
+				await pump(data.file, fs.createWriteStream(filePath));
+
+				const oldFilePath = path.join(
+					__dirname,
+					`/../../../${currentImage.url}`,
+				);
+				if (fs.existsSync(oldFilePath)) {
+					fs.unlinkSync(oldFilePath);
+				}
+
+				productImageUrl = `/uploads/${productId}/${newFilename}`;
+			}
+
+			const updatedProductImage =
+				await this.productImageService.updateProductImage({
+					id: req.params.id,
+					url: productImageUrl,
+					productId: currentImage.productId,
+				});
+
+			reply.code(StatusCodes.OK).send(updatedProductImage);
 		} catch (error) {
 			const errorMessage =
 				'Unexpected error when updating for product category';

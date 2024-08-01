@@ -8,7 +8,7 @@ export const getProductImageByIdSchema = z
 
 export const productImageCreateSchema = z
 	.object({
-		url: z.string().url(),
+		url: z.string().min(1),
 		productId: z.string().uuid(),
 	})
 	.required();
@@ -16,7 +16,5 @@ export const productImageCreateSchema = z
 export const productImageUpdateSchema = z
 	.object({
 		id: z.string().uuid(),
-		url: z.string().url(),
-		productId: z.string().uuid(),
 	})
 	.required();

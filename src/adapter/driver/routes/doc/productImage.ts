@@ -4,14 +4,16 @@ export const SwaggerCreateProductImages = {
 		description: 'Create product image',
 		tags: ['Product Image'],
 		body: {
-			type: 'object',
+			type: 'array',
+			required: ['myFile', 'productId'],
 			properties: {
-				url: {
+				myFile: {
 					type: 'string',
-					description: 'Product image url',
+					description: 'Product image file',
 				},
 				productId: {
 					type: 'string',
+					format: 'uuid',
 					description: 'Product Id',
 				},
 			},
@@ -439,15 +441,12 @@ export const SwaggerUpdateProductImages = {
 		tags: ['Product Image'],
 		params: { id: { type: 'string' } },
 		body: {
-			type: 'object',
+			type: 'array',
+			required: ['myFile'],
 			properties: {
-				url: {
+				myFile: {
 					type: 'string',
-					description: 'Product image url',
-				},
-				productId: {
-					type: 'string',
-					description: 'Product Id',
+					description: 'Product image file',
 				},
 			},
 		},
