@@ -11,4 +11,5 @@ export interface ProductRepository {
 	deleteProducts(id: string): Promise<void>;
 	createProducts(product: CreateProductParams): Promise<Product>;
 	updateProducts(product: UpdateProductParams): Promise<Product>;
+	getProductById(id: string): Promise<Product>;
 }

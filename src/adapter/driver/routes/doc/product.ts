@@ -25,8 +25,8 @@ export const SwaggerGetProducts = {
 						name: {
 							type: 'string',
 						},
-						amount: {
-							type: 'number',
+						value: {
+							type: 'string',
 							format: 'money',
 						},
 						description: {
@@ -184,15 +184,15 @@ export const SwaggerCreateProducts = {
 		tags: ['Product'],
 		body: {
 			type: 'array',
-			required: ['name', 'amount', 'description', 'categoryId'],
+			required: ['name', 'value', 'description', 'categoryId'],
 			properties: {
 				name: {
 					type: 'string',
 					description: 'Product Id',
 				},
-				amount: {
+				value: {
 					type: 'number',
-					description: 'Product amount',
+					description: 'Product value',
 				},
 				description: {
 					type: 'string',
@@ -223,7 +223,7 @@ export const SwaggerCreateProducts = {
 					name: {
 						type: 'string',
 					},
-					amount: {
+					value: {
 						type: 'number',
 					},
 					description: {
@@ -294,7 +294,7 @@ export const SwaggerUpdateProducts = {
 		description: 'Update products',
 		consumes: ['multipart/form-data'],
 		tags: ['Product'],
-		params: { id: { type: 'string' } },
+		params: { id: { type: 'string', format: 'uuid' } },
 		body: {
 			type: 'array',
 			properties: {
@@ -302,9 +302,9 @@ export const SwaggerUpdateProducts = {
 					type: 'string',
 					description: 'Product Id',
 				},
-				amount: {
+				value: {
 					type: 'number',
-					description: 'Product amount',
+					description: 'Product value',
 				},
 				description: {
 					type: 'string',
@@ -334,7 +334,7 @@ export const SwaggerUpdateProducts = {
 					name: {
 						type: 'string',
 					},
-					amount: {
+					value: {
 						type: 'number',
 					},
 					description: {

@@ -7,7 +7,7 @@ export type GetProducByIdParams = {
 export type UpdateProductParams = {
 	id: string;
 	name?: string;
-	amount?: number;
+	value?: number;
 	description?: string;
 	categoryId?: string;
 	images?: Multipart[];
@@ -15,7 +15,7 @@ export type UpdateProductParams = {
 
 export type CreateProductParams = {
 	name: string;
-	amount: number;
+	value: number;
 	description: string;
 	categoryId: string;
 	images?: Multipart[];

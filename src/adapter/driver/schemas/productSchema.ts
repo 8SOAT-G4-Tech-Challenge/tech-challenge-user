@@ -22,7 +22,7 @@ export const getProductByIdSchema = z
 
 export const productSchema = z.object({
 	name: z.string(),
-	amount: z.number(),
+	value: z.number(),
 	description: z.string(),
 	categoryId: z.string().uuid(),
 	images: fileSchema.optional(),
@@ -31,7 +31,7 @@ export const productSchema = z.object({
 export const updateProductSchema = z.object({
 	id: z.string().uuid(),
 	name: z.string().optional(),
-	amount: z.number().optional(),
+	value: z.number().optional(),
 	description: z.string().optional(),
 	categoryId: z.string().uuid().optional(),
 	images: fileSchema.optional(),

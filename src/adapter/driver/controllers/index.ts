@@ -4,3 +4,4 @@ export * from './productCategoryController';
 export * from './productController';
 export * from './productImageController';
 export * from './userController';
+export * from './cartController';
