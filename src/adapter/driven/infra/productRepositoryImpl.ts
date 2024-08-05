@@ -7,6 +7,8 @@ import {
 	UpdateProductParams,
 } from '@ports/input/products';
 import { ProductRepository } from '@ports/repository/productRepository';
+import { Prisma } from '@prisma/client';
+import { InvalidProductException } from '@src/core/application/exceptions/invalidProductException';
 
 export class ProductRepositoryImpl implements ProductRepository {
 	async getProducts(): Promise<ProductWithDetails[]> {
@@ -76,8 +78,15 @@ export class ProductRepositoryImpl implements ProductRepository {
 					categoryId: product.categoryId,
 				},
 			})
-			.catch(() => {
-				throw new DataNotFoundException('Error creating product');
+			.catch((error) => {
+				if (error instanceof Prisma.PrismaClientKnownRequestError) {
+					if (error.code === 'P2002') {
+						throw new InvalidProductException(
+							`Product with name: ${product.name} already exists`,
+						);
+					}
+				}
+				throw new InvalidProductException('Error creating product');
 			});
 
 		return {
