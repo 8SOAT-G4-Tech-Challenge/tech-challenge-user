@@ -72,7 +72,6 @@ export const SwaggerGetCustomersProperty = {
 				cpf: { type: 'string' },
 			},
 			additionalProperties: false,
-			required: [],
 		},
 		response: {
 			200: {
@@ -249,6 +248,7 @@ export const SwaggerDeleteCustomers = {
 		tags: ['Customer'],
 		params: {
 			type: 'object',
+			required: ['id'],
 			properties: {
 				id: {
 					type: 'string',
@@ -256,7 +256,6 @@ export const SwaggerDeleteCustomers = {
 					description: 'The unique identifier of the customer to delete',
 				},
 			},
-			required: ['id'],
 			additionalProperties: false,
 		},
 		response: {

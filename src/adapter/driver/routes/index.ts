@@ -10,6 +10,7 @@ import {
 } from '@application/services';
 import {
 	CustomerRepositoryImpl,
+	FileSystemStorageImpl,
 	OrderRepositoryImpl,
 	ProductCategoryRepositoryImpl,
 	ProductImageRepositoryImpl,
@@ -38,25 +39,16 @@ import {
 	SwaggerUpdateOrder,
 } from './doc/order';
 import {
-	SwaggerGetProducts,
 	SwaggerCreateProducts,
 	SwaggerDeleteProducts,
+	SwaggerGetProducts,
 	SwaggerUpdateProducts,
-	/* 	SwaggerUpdateProducts, */
 } from './doc/product';
 import {
 	SwaggerCreateProductCategories,
 	SwaggerGetProductCategories,
 } from './doc/productCategory';
-import {
-	SwaggerCreateProductImages,
-	SwaggerDeleteProductImageById,
-	SwaggerDeleteProductImageByProductId,
-	SwaggerGetProductImageById,
-	SwaggerGetProductImages,
-	SwaggerGetProductImagesByProductId,
-	SwaggerUpdateProductImages,
-} from './doc/productImage';
+import { SwaggerDeleteProductImageById } from './doc/productImage';
 import { SwaggerGetUsers } from './doc/user';
 
 const userRepository = new UserRepositoryImpl();
@@ -65,16 +57,22 @@ const productRepository = new ProductRepositoryImpl();
 const orderRepository = new OrderRepositoryImpl();
 const productCategoryRepository = new ProductCategoryRepositoryImpl();
 const productImageRepository = new ProductImageRepositoryImpl();
+const fileSystemStorage = new FileSystemStorageImpl();
 
 const userService = new UserService(userRepository);
 const customerService = new CustomerService(customerRepository);
 const productCategoryService = new ProductCategoryService(
 	productCategoryRepository,
 );
-const productImageService = new ProductImageService(productImageRepository);
 const productService = new ProductService(
 	productCategoryService,
 	productRepository,
+	productImageRepository,
+	fileSystemStorage,
+);
+const productImageService = new ProductImageService(
+	productImageRepository,
+	fileSystemStorage,
 );
 const orderService = new OrderService(orderRepository);
 
@@ -83,8 +81,8 @@ const customerController = new CustomerController(customerService);
 const productCategoryController = new ProductCategoryController(
 	productCategoryService,
 );
-const productImageController = new ProductImageController(productImageService);
 const productController = new ProductController(productService);
+const productImageController = new ProductImageController(productImageService);
 const orderController = new OrderController(orderService);
 
 // Usem esse site para gerar o swagger a partir do JSON -> https://roger13.github.io/SwagDefGen/
@@ -122,17 +120,22 @@ export const routes = async (fastify: FastifyInstance) => {
 	fastify.post(
 		'/products',
 		SwaggerCreateProducts,
-		productController.createProducts.bind(productController)
+		productController.createProducts.bind(productController),
 	);
 	fastify.put(
 		'/products/:id',
 		SwaggerUpdateProducts,
-		productController.updateProducts.bind(productController)
+		productController.updateProducts.bind(productController),
 	);
 	fastify.delete(
 		'/products/:id',
 		SwaggerDeleteProducts,
-		productController.deleteProducts.bind(productController)
+		productController.deleteProducts.bind(productController),
+	);
+	fastify.delete(
+		'/product-images/:id',
+		SwaggerDeleteProductImageById,
+		productImageController.deleteProductImageById.bind(productImageController),
 	);
 	fastify.post(
 		'/product-categories',
@@ -167,44 +170,5 @@ export const routes = async (fastify: FastifyInstance) => {
 		'/orders/:id',
 		SwaggerUpdateOrder,
 		orderController.updateOrder.bind(orderController),
-	);
-	fastify.get(
-		'/product-images',
-		SwaggerGetProductImages,
-		productImageController.getProductImages.bind(productImageController),
-	);
-	fastify.get(
-		'/product-images/:id',
-		SwaggerGetProductImageById,
-		productImageController.getProductImageById.bind(productImageController),
-	);
-	fastify.get(
-		'/product-images/product/:id',
-		SwaggerGetProductImagesByProductId,
-		productImageController.getProductImageByProductId.bind(
-			productImageController,
-		),
-	);
-	fastify.post(
-		'/product-images',
-		SwaggerCreateProductImages,
-		productImageController.createProductImage.bind(productImageController),
-	);
-	fastify.put(
-		'/product-images/:id',
-		SwaggerUpdateProductImages,
-		productImageController.updateProductImage.bind(productImageController),
-	);
-	fastify.delete(
-		'/product-images/:id',
-		SwaggerDeleteProductImageById,
-		productImageController.deleteProductImageById.bind(productImageController),
-	);
-	fastify.delete(
-		'/product-images/product/:id',
-		SwaggerDeleteProductImageByProductId,
-		productImageController.deleteProductImageByProductId.bind(
-			productImageController,
-		),
 	);
 };

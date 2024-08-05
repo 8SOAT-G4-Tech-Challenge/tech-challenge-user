@@ -5,18 +5,6 @@ import { GetProductImageByIdParams } from '@ports/input/productImage';
 import { ProductImageRepository } from '@ports/repository/productImageRepository';
 
 export class ProductImageRepositoryImpl implements ProductImageRepository {
-	async getProductImages(): Promise<ProductImage[]> {
-		return prisma.productImage.findMany({
-			select: {
-				id: true,
-				url: true,
-				productId: true,
-				createdAt: true,
-				updatedAt: true,
-			},
-		});
-	}
-
 	async getProductImageById({
 		id,
 	}: GetProductImageByIdParams): Promise<ProductImage> {
@@ -29,22 +17,6 @@ export class ProductImageRepositoryImpl implements ProductImageRepository {
 			.catch(() => {
 				throw new DataNotFoundException(
 					`Product Image with id: ${id} not found`,
-				);
-			});
-	}
-
-	async getProductImageByProductId({
-		id,
-	}: GetProductImageByIdParams): Promise<ProductImage[]> {
-		return prisma.productImage
-			.findMany({
-				where: {
-					productId: id,
-				},
-			})
-			.catch(() => {
-				throw new DataNotFoundException(
-					`Product Image with product id: ${id} not found`,
 				);
 			});
 	}
@@ -72,35 +44,6 @@ export class ProductImageRepositoryImpl implements ProductImageRepository {
 				throw new DataNotFoundException(
 					`Product Image with id: ${id} not found`,
 				);
-			});
-	}
-
-	async deleteProductImageByProductId({
-		id,
-	}: GetProductImageByIdParams): Promise<void> {
-		await prisma.productImage
-			.deleteMany({
-				where: {
-					productId: id,
-				},
-			})
-			.catch(() => {
-				throw new DataNotFoundException(
-					`Error deleting product image with product id: ${id}`,
-				);
-			});
-	}
-
-	async updateProductImage(productImage: ProductImage): Promise<ProductImage> {
-		return prisma.productImage
-			.update({
-				where: {
-					id: productImage.id,
-				},
-				data: productImage,
-			})
-			.catch(() => {
-				throw new DataNotFoundException('Error updating product image');
 			});
 	}
 }

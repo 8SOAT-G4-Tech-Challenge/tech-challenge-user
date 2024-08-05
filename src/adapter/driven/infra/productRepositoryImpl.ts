@@ -1,15 +1,19 @@
 import logger from '@common/logger';
 import { prisma } from '@driven/infra/lib/prisma';
 import { DataNotFoundException } from '@exceptions/dataNotFound';
-import { Product } from '@models/product';
-import { UpdateProductParams } from '@ports/input/products';
+import { Product, ProductWithDetails } from '@models/product';
+import {
+	CreateProductParams,
+	UpdateProductParams,
+} from '@ports/input/products';
 import { ProductRepository } from '@ports/repository/productRepository';
 
 export class ProductRepositoryImpl implements ProductRepository {
-	async getProducts(): Promise<Product[]> {
+	async getProducts(): Promise<ProductWithDetails[]> {
 		const products = await prisma.product.findMany({
 			include: {
 				category: true,
+				images: true,
 			},
 		});
 		return products.map((product) => ({
@@ -18,11 +22,28 @@ export class ProductRepositoryImpl implements ProductRepository {
 		}));
 	}
 
+	async getProductById(id: string): Promise<ProductWithDetails> {
+		const product = await prisma.product.findUnique({
+			where: { id },
+			include: { images: true },
+		});
+
+		if (!product) {
+			throw new DataNotFoundException(`Product with id: ${id} not found`);
+		}
+
+		return {
+			...product,
+			amount: parseFloat(product.amount.toString()),
+		};
+	}
+
 	async getProductsByCategory(categoryId: string): Promise<Product[]> {
 		const products = await prisma.product.findMany({
 			where: { categoryId },
 			include: {
 				category: true,
+				images: true,
 			},
 		});
 		return products.map((product) => ({
@@ -45,15 +66,19 @@ export class ProductRepositoryImpl implements ProductRepository {
 		}
 	}
 
-	async createProducts(product: Product): Promise<Product> {
-		const createdProducts = await prisma.product.create({
-			data: {
-				amount: product.amount,
-				description: product.description,
-				name: product.name,
-				categoryId: product.categoryId,
-			},
-		});
+	async createProducts(product: CreateProductParams): Promise<Product> {
+		const createdProducts = await prisma.product
+			.create({
+				data: {
+					amount: product.amount,
+					description: product.description,
+					name: product.name,
+					categoryId: product.categoryId,
+				},
+			})
+			.catch(() => {
+				throw new DataNotFoundException('Error creating product');
+			});
 
 		return {
 			...createdProducts,
@@ -62,16 +87,23 @@ export class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	async updateProducts(product: UpdateProductParams): Promise<Product> {
+		console.log('productRepository => ', product);
 		const updatedProduct = await prisma.product
 			.update({
 				where: {
 					id: product.id,
 				},
-				data: product,
+				data: {
+					name: product.name,
+					amount: product.amount,
+					description: product.description,
+					categoryId: product.categoryId,
+				},
 			})
-			.catch(() => {
+			.catch((error) => {
+				console.log('error => ', error);
 				throw new DataNotFoundException(
-					`Product with id: ${product.id} not found`
+					`Product with id: ${product.id} not found`,
 				);
 			});
 

@@ -29,6 +29,9 @@ export const SwaggerGetProducts = {
 							type: 'number',
 							format: 'money',
 						},
+						description: {
+							type: 'string',
+						},
 						category: {
 							type: 'object',
 							properties: {
@@ -37,6 +40,29 @@ export const SwaggerGetProducts = {
 								},
 								name: {
 									type: 'string',
+								},
+							},
+						},
+						images: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									id: {
+										type: 'string',
+										format: 'uuid',
+									},
+									url: {
+										type: 'string',
+									},
+									createdAt: {
+										type: 'string',
+										format: 'datetime',
+									},
+									updatedAt: {
+										type: 'string',
+										format: 'datetime',
+									},
 								},
 							},
 						},
@@ -154,9 +180,11 @@ export const SwaggerCreateProducts = {
 	schema: {
 		summary: 'Create products',
 		description: 'Create products',
+		consumes: ['multipart/form-data'],
 		tags: ['Product'],
 		body: {
-			type: 'object',
+			type: 'array',
+			required: ['name', 'amount', 'description', 'categoryId'],
 			properties: {
 				name: {
 					type: 'string',
@@ -172,7 +200,15 @@ export const SwaggerCreateProducts = {
 				},
 				categoryId: {
 					type: 'string',
+					format: 'uuid',
 					description: 'Product category',
+				},
+				images: {
+					type: 'array',
+					items: {
+						type: 'string',
+						description: 'Product images',
+					},
 				},
 			},
 		},
@@ -256,24 +292,35 @@ export const SwaggerUpdateProducts = {
 	schema: {
 		summary: 'Update products',
 		description: 'Update products',
+		consumes: ['multipart/form-data'],
 		tags: ['Product'],
 		params: { id: { type: 'string' } },
 		body: {
-			name: {
-				type: 'string',
-				description: 'Product Id',
-			},
-			amount: {
-				type: 'number',
-				description: 'Product amount',
-			},
-			description: {
-				type: 'string',
-				description: 'Product description',
-			},
-			categoryId: {
-				type: 'string',
-				description: 'Product category',
+			type: 'array',
+			properties: {
+				name: {
+					type: 'string',
+					description: 'Product Id',
+				},
+				amount: {
+					type: 'number',
+					description: 'Product amount',
+				},
+				description: {
+					type: 'string',
+					description: 'Product description',
+				},
+				categoryId: {
+					type: 'string',
+					description: 'Product category',
+				},
+				images: {
+					type: 'array',
+					items: {
+						type: 'string',
+						description: 'Product images',
+					},
+				},
 			},
 		},
 		response: {

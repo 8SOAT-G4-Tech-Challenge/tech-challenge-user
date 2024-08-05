@@ -1,15 +1,19 @@
 import logger from '@common/logger';
 import {
+	getProductByIdSchema,
 	productFilterSchema,
 	productSchema,
 	updateProductSchema,
 } from '@driver/schemas/productSchema';
 import { InvalidProductException } from '@exceptions/invalidProductException';
-import { Product } from '@models/product';
+import { Product, ProductWithDetails } from '@models/product';
 import {
 	CreateProductParams,
+	GetProducByIdParams,
 	UpdateProductParams,
 } from '@ports/input/products';
+import { FileSystemStorage } from '@ports/output/fileSystemStorage';
+import { ProductImageRepository } from '@ports/repository/productImageRepository';
 import { ProductRepository } from '@ports/repository/productRepository';
 import { ProductCategoryService } from '@services/productCategoryService';
 
@@ -18,12 +22,20 @@ export class ProductService {
 
 	private readonly productRepository;
 
+	private readonly productImageRepository;
+
+	private readonly fileStorage;
+
 	constructor(
 		productCategoryService: ProductCategoryService,
-		productRepository: ProductRepository
+		productRepository: ProductRepository,
+		productImageRepository: ProductImageRepository,
+		fileStorage: FileSystemStorage,
 	) {
 		this.productCategoryService = productCategoryService;
 		this.productRepository = productRepository;
+		this.productImageRepository = productImageRepository;
+		this.fileStorage = fileStorage;
 	}
 
 	async getProducts(filters: any): Promise<Product[]> {
@@ -32,11 +44,11 @@ export class ProductService {
 			logger.info(`Searching category by name: ${filters.category}`);
 			const productCategory =
 				await this.productCategoryService.getProductCategoryByName(
-					filters.category
+					filters.category,
 				);
 			if (productCategory) {
 				logger.info(
-					`Success search product category ${JSON.stringify(productCategory)}`
+					`Success search product category ${JSON.stringify(productCategory)}`,
 				);
 				return this.productRepository.getProductsByCategory(productCategory.id);
 			}
@@ -45,32 +57,81 @@ export class ProductService {
 		return this.productRepository.getProducts();
 	}
 
-	async deleteProducts(id: string): Promise<void> {
+	async deleteProducts({ id }: GetProducByIdParams): Promise<void> {
+		const { success } = getProductByIdSchema.safeParse({ id });
+		if (!success) {
+			throw new InvalidProductException(
+				`Error deleting product by Id. Invalid Id: ${id}`,
+			);
+		}
+
 		try {
+			const product = await this.productRepository.getProductById(id);
+			if (!product) {
+				throw new InvalidProductException(`Product with id: ${id} not found`);
+			}
 			await this.productRepository.deleteProducts(id);
+
+			const uploadDir = `uploads/${id}`;
+			await this.fileStorage.deleteDirectory(uploadDir);
+
+			logger.info(`Directory for product ${id} has been removed.`);
 		} catch (error) {
 			throw new Error('An unexpected error occurred while deleting');
 		}
 	}
 
-	async createProducts(productDto: CreateProductParams): Promise<Product> {
+	async createProducts(
+		productDto: CreateProductParams,
+	): Promise<ProductWithDetails> {
 		const { success } = productSchema.safeParse(productDto);
-
 		if (!success) {
 			throw new InvalidProductException(
-				"There's a problem with parameters sent, check documentation"
+				"There's a problem with parameters sent, check documentation",
 			);
 		}
 
-		return this.productRepository.createProducts(productDto);
+		const createdProduct = await this.productRepository.createProducts(
+			productDto,
+		);
+
+		if (productDto.images && productDto.images.length > 0) {
+			await Promise.all(
+				productDto.images.map(async (image) => {
+					const imageUrl = await this.fileStorage.saveFile(
+						image,
+						createdProduct.id,
+					);
+					return this.productImageRepository.createProductImage({
+						url: imageUrl,
+						productId: createdProduct.id,
+					});
+				}),
+			);
+		}
+
+		return createdProduct;
 	}
 
-	async updateProducts(product: UpdateProductParams): Promise<Product> {
+	async updateProducts(
+		product: UpdateProductParams,
+	): Promise<ProductWithDetails> {
 		const { success } = updateProductSchema.safeParse(product);
-
 		if (!success) {
 			throw new InvalidProductException(
-				"There's a problem with parameters sent, check documentation"
+				"There's a problem with parameters sent, check documentation",
+			);
+		}
+
+		if (product.images && product.images.length > 0) {
+			await Promise.all(
+				product.images.map(async (image) => {
+					const imageUrl = await this.fileStorage.saveFile(image, product.id);
+					return this.productImageRepository.createProductImage({
+						url: imageUrl,
+						productId: product.id,
+					});
+				}),
 			);
 		}
 

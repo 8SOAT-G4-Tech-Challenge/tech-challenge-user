@@ -3,13 +3,23 @@ import { StatusCodes } from 'http-status-codes';
 
 import logger from '@common/logger';
 import { handleError } from '@driver/errorHandler';
+import { Multipart, MultipartFile } from '@fastify/multipart';
 import {
 	CreateProductParams,
+	GetProducByIdParams,
 	UpdateProductParams,
 } from '@ports/input/products';
 import { UpdateProductResponse } from '@ports/output/products';
 import { Product } from '@prisma/client';
 import { ProductService } from '@services/productService';
+
+// Função auxiliar para definir os campos do objeto sem mutação direta
+function setField<T, K extends keyof T>(obj: T, key: K, value: T[K]): T {
+	return {
+		...obj,
+		[key]: key === 'amount' ? Number(value) : value,
+	};
+}
 
 export class ProductController {
 	private readonly productService;
@@ -22,7 +32,7 @@ export class ProductController {
 		try {
 			if (req.query && Object.keys(req.query).length > 0) {
 				logger.info(
-					`Listing products with parameters: ${JSON.stringify(req.query)}`
+					`Listing products with parameters: ${JSON.stringify(req.query)}`,
 				);
 			} else {
 				logger.info('Listing products');
@@ -38,13 +48,13 @@ export class ProductController {
 	}
 
 	async deleteProducts(
-		req: FastifyRequest,
-		reply: FastifyReply
+		req: FastifyRequest<{ Params: GetProducByIdParams }>,
+		reply: FastifyReply,
 	): Promise<void> {
-		const { id } = req.params as { id: string };
+		const { id } = req.params;
 		try {
 			logger.info('Deleting product');
-			await this.productService.deleteProducts(id);
+			await this.productService.deleteProducts({ id });
 			reply
 				.code(StatusCodes.OK)
 				.send({ message: 'Product successfully deleted' });
@@ -56,14 +66,40 @@ export class ProductController {
 	}
 
 	async createProducts(
-		req: FastifyRequest<{ Body: CreateProductParams }>,
-		reply: FastifyReply
+		req: FastifyRequest<{ Body: CreateProductParams; Files: Multipart[] }>,
+		reply: FastifyReply,
 	) {
 		try {
-			logger.info(`Creating product: ${JSON.stringify(req.body)}`);
-			reply
-				.code(StatusCodes.CREATED)
-				.send(await this.productService.createProducts(req.body));
+			const parts = req.parts() as unknown as Multipart[];
+
+			let data: CreateProductParams = {
+				name: '',
+				amount: 0,
+				description: '',
+				categoryId: '',
+				images: [],
+			};
+
+			const imageFiles: MultipartFile[] = [];
+
+			for await (const part of parts) {
+				if (part.type === 'file') {
+					imageFiles.push(part);
+				} else {
+					data = setField(
+						data,
+						part.fieldname as keyof CreateProductParams,
+						part.value as any,
+					);
+				}
+			}
+
+			data.images = imageFiles;
+
+			logger.info(`Creating product: ${JSON.stringify(data.name)}`);
+
+			const createdProduct = await this.productService.createProducts(data);
+			reply.code(StatusCodes.CREATED).send(createdProduct);
 		} catch (error) {
 			const errorMessage = 'Unexpected when creating for product';
 			logger.error(`${errorMessage}: ${error}`);
@@ -74,17 +110,37 @@ export class ProductController {
 	async updateProducts(
 		req: FastifyRequest<{
 			Params: Pick<Product, 'id'>;
-			Body: UpdateProductParams;
+			Body: UpdateProductParams[];
+			Files: Multipart[];
 		}>,
-		reply: FastifyReply
+		reply: FastifyReply,
 	) {
+		console.log('updating product');
 		try {
 			logger.info('Updating product', req?.params?.id);
+			const parts = req.parts() as unknown as Multipart[];
+			let data: UpdateProductParams = {
+				id: req?.params?.id,
+			};
+
+			const imageFiles: MultipartFile[] = [];
+
+			for await (const part of parts) {
+				if (part.type === 'file') {
+					imageFiles.push(part);
+				} else {
+					data = setField(
+						data,
+						part.fieldname as keyof UpdateProductParams,
+						part.value as any,
+					);
+				}
+			}
+
+			data.images = imageFiles;
+
 			const product: UpdateProductResponse =
-				await this.productService.updateProducts({
-					...req.body,
-					id: req?.params?.id,
-				});
+				await this.productService.updateProducts(data);
 			reply.code(StatusCodes.OK).send(product);
 		} catch (error) {
 			logger.error(`Unexpected error when trying to update product: ${error}`);
