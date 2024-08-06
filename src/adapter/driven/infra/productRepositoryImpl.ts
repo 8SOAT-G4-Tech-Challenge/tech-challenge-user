@@ -82,7 +82,6 @@ export class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	async updateProducts(product: UpdateProductParams): Promise<Product> {
-		console.log('productRepository => ', product);
 		const updatedProduct = await prisma.product
 			.update({
 				where: {
@@ -95,8 +94,7 @@ export class ProductRepositoryImpl implements ProductRepository {
 					categoryId: product.categoryId,
 				},
 			})
-			.catch((error) => {
-				console.log('error => ', error);
+			.catch(() => {
 				throw new DataNotFoundException(
 					`Product with id: ${product.id} not found`,
 				);

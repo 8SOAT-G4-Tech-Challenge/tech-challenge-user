@@ -17,7 +17,7 @@ import { ProductService } from '@services/productService';
 function setField<T, K extends keyof T>(obj: T, key: K, value: T[K]): T {
 	return {
 		...obj,
-		[key]: key === 'amount' ? Number(value) : value,
+		[key]: key === 'value' ? Number(value) : value,
 	};
 }
 
@@ -74,7 +74,7 @@ export class ProductController {
 
 			let data: CreateProductParams = {
 				name: '',
-				amount: 0,
+				value: 0,
 				description: '',
 				categoryId: '',
 				images: [],

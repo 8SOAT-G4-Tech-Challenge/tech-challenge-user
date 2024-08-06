@@ -123,6 +123,13 @@ export class ProductService {
 			);
 		}
 
+		/* const productExists = await this.productRepository.getProductById(product.id);
+		if (!productExists) {
+			throw new InvalidProductException(
+				`Product with id: ${product.id} not found`,
+			);
+		} */
+
 		if (product.images && product.images.length > 0) {
 			await Promise.all(
 				product.images.map(async (image) => {
