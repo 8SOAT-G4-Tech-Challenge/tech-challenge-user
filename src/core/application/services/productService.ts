@@ -6,6 +6,7 @@ import {
 	updateProductSchema,
 } from '@driver/schemas/productSchema';
 import { InvalidProductException } from '@exceptions/invalidProductException';
+import { MultipartFile } from '@fastify/multipart';
 import { Product, ProductWithDetails } from '@models/product';
 import {
 	CreateProductParams,
@@ -123,26 +124,49 @@ export class ProductService {
 			);
 		}
 
-		/* const productExists = await this.productRepository.getProductById(product.id);
-		if (!productExists) {
-			throw new InvalidProductException(
-				`Product with id: ${product.id} not found`,
-			);
-		} */
+		const productExists = await this.productRepository.getProductById(
+			product.id,
+		);
 
-		if (product.images && product.images.length > 0) {
-			await Promise.all(
-				product.images.map(async (image) => {
-					const imageUrl = await this.fileStorage.saveFile(image, product.id);
-					return this.productImageRepository.createProductImage({
-						url: imageUrl,
-						productId: product.id,
-					});
-				}),
-			);
+		const hasFilesToSave = product.images?.some(
+			(image) => image.filename.trim().length > 0,
+		);
+		const hasExistingImages =
+			productExists.images && productExists.images.length > 0;
+
+		if (hasFilesToSave || hasExistingImages) {
+			await this.handleImageUpdates(product);
 		}
 
 		logger.info(`Updating product: ${product.id}`);
 		return this.productRepository.updateProducts(product);
+	}
+
+	async handleImageUpdates(product: UpdateProductParams) {
+		const imageFolderPath = `uploads/${product.id}`;
+
+		if (!product.images || product.images.length === 0) {
+			await this.deleteAllImages(imageFolderPath, product.id);
+		} else {
+			await this.deleteAllImages(imageFolderPath, product.id);
+			await this.saveNewImages(product.images, product.id);
+		}
+	}
+
+	async deleteAllImages(imageFolderPath: string, productId: string) {
+		await this.fileStorage.deleteDirectory(imageFolderPath);
+		await this.productImageRepository.deleteProductImageByProductId(productId);
+	}
+
+	async saveNewImages(images: MultipartFile[], productId: string) {
+		await Promise.all(
+			images.map(async (image) => {
+				const imageUrl = await this.fileStorage.saveFile(image, productId);
+				return this.productImageRepository.createProductImage({
+					url: imageUrl,
+					productId,
+				});
+			}),
+		);
 	}
 }

@@ -14,4 +14,5 @@ export interface ProductImageRepository {
 	getProductImageById(
 		productImageId: GetProductImageByIdParams,
 	): Promise<ProductImage>;
+	deleteProductImageByProductId(productId: string): Promise<void>;
 }

@@ -40,6 +40,27 @@ export class ProductRepositoryImpl implements ProductRepository {
 		}));
 	}
 
+	async getProductById(id: string): Promise<ProductWithDetails> {
+		const product = await prisma.product
+			.findFirstOrThrow({
+				where: {
+					id,
+				},
+				include: {
+					category: true,
+					images: true,
+				},
+			})
+			.catch(() => {
+				throw new DataNotFoundException(`Product with id: ${id} not found`);
+			});
+
+		return {
+			...product,
+			value: parseFloat(product.value.toString()),
+		};
+	}
+
 	async deleteProducts(id: string): Promise<void> {
 		const findProduct = await prisma.product.findFirst({
 			where: { id },
@@ -72,7 +93,10 @@ export class ProductRepositoryImpl implements ProductRepository {
 						);
 					}
 				}
-				throw new InvalidProductException('Error creating product');
+				throw new InvalidProductException(
+					'Error creating product',
+					error.message,
+				);
 			});
 
 		return {
@@ -105,27 +129,6 @@ export class ProductRepositoryImpl implements ProductRepository {
 		return {
 			...updatedProduct,
 			value: parseFloat(updatedProduct.value.toString()),
-		};
-	}
-
-	async getProductById(id: string): Promise<ProductWithDetails> {
-		const product = await prisma.product
-			.findFirstOrThrow({
-				where: {
-					id,
-				},
-				include: {
-					category: true,
-					images: true,
-				},
-			})
-			.catch(() => {
-				throw new DataNotFoundException(`Product with id: ${id} not found`);
-			});
-
-		return {
-			...product,
-			value: parseFloat(product.value.toString()),
 		};
 	}
 }

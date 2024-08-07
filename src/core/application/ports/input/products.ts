@@ -1,4 +1,4 @@
-import { Multipart } from '@fastify/multipart';
+import { MultipartFile } from '@fastify/multipart';
 
 export type GetProducByIdParams = {
 	id: string;
@@ -10,7 +10,7 @@ export type UpdateProductParams = {
 	value?: number;
 	description?: string;
 	categoryId?: string;
-	images?: Multipart[];
+	images?: MultipartFile[];
 };
 
 export type CreateProductParams = {
@@ -18,5 +18,5 @@ export type CreateProductParams = {
 	value: number;
 	description: string;
 	categoryId: string;
-	images?: Multipart[];
+	images?: MultipartFile[];
 };
