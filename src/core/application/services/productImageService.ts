@@ -35,21 +35,4 @@ export class ProductImageService {
 			await this.productImageRepository.getProductImageById({ id });
 		return productImageFound;
 	}
-
-	async deleteProductImageById(productImage: ProductImage): Promise<void> {
-		const { success } = getProductImageByIdSchema.safeParse(productImage);
-		if (!success) {
-			throw new InvalidProductImageException(
-				`Error deleting product image by Id. Invalid Id: ${productImage.id}`,
-			);
-		}
-
-		logger.info(`Deleting product image by Id: ${productImage.id}`);
-
-		await this.fileStorage.deleteFile(productImage.url);
-
-		await this.productImageRepository.deleteProductImageById({
-			id: productImage.id,
-		});
-	}
 }

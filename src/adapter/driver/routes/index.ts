@@ -1,15 +1,15 @@
 import { FastifyInstance } from 'fastify';
 
 import {
+	CartService,
 	CustomerService,
 	OrderService,
 	ProductCategoryService,
-	ProductImageService,
 	ProductService,
 	UserService,
-	CartService,
 } from '@application/services';
 import {
+	CartRepositoryImpl,
 	CustomerRepositoryImpl,
 	FileSystemStorageImpl,
 	OrderRepositoryImpl,
@@ -17,16 +17,14 @@ import {
 	ProductImageRepositoryImpl,
 	ProductRepositoryImpl,
 	UserRepositoryImpl,
-	CartRepositoryImpl,
 } from '@driven/infra';
 import {
+	CartController,
 	CustomerController,
 	OrderController,
 	ProductCategoryController,
 	ProductController,
-	ProductImageController,
 	UserController,
-	CartController,
 } from '@driver/controllers';
 
 import {
@@ -36,11 +34,11 @@ import {
 	SwaggerGetCustomersProperty,
 } from './doc/customer';
 import {
+	SwaggerAddItemToCart,
 	SwaggerCreateOrder,
 	SwaggerGetOrders,
 	SwaggerGetOrdersById,
 	SwaggerUpdateOrder,
-	SwaggerAddItemToCart,
 } from './doc/order';
 import { SwaggerDeleteOrderItem, SwaggerUpdateCartItem } from './doc/orderItem';
 import {
@@ -53,7 +51,6 @@ import {
 	SwaggerCreateProductCategories,
 	SwaggerGetProductCategories,
 } from './doc/productCategory';
-import { SwaggerDeleteProductImageById } from './doc/productImage';
 import { SwaggerGetUsers } from './doc/user';
 
 const userRepository = new UserRepositoryImpl();
@@ -76,15 +73,12 @@ const productService = new ProductService(
 	productImageRepository,
 	fileSystemStorage,
 );
-const productImageService = new ProductImageService(
-	productImageRepository,
-	fileSystemStorage,
-);
+
 const orderService = new OrderService(orderRepository, cartRepository);
 const cartService = new CartService(
 	cartRepository,
 	orderRepository,
-	productRepository
+	productRepository,
 );
 
 const userController = new UserController(userService);
@@ -93,7 +87,6 @@ const productCategoryController = new ProductCategoryController(
 	productCategoryService,
 );
 const productController = new ProductController(productService);
-const productImageController = new ProductImageController(productImageService);
 const orderController = new OrderController(orderService);
 const cartController = new CartController(cartService);
 
@@ -144,11 +137,6 @@ export const routes = async (fastify: FastifyInstance) => {
 		SwaggerDeleteProducts,
 		productController.deleteProducts.bind(productController),
 	);
-	fastify.delete(
-		'/product-images/:id',
-		SwaggerDeleteProductImageById,
-		productImageController.deleteProductImageById.bind(productImageController),
-	);
 	fastify.post(
 		'/product-categories',
 		SwaggerCreateProductCategories,
@@ -186,16 +174,16 @@ export const routes = async (fastify: FastifyInstance) => {
 	fastify.post(
 		'/orders/:id',
 		SwaggerAddItemToCart,
-		cartController.addItemToCart.bind(cartController)
+		cartController.addItemToCart.bind(cartController),
 	);
 	fastify.put(
 		'/order-items/:id',
 		SwaggerUpdateCartItem,
-		cartController.updateCartItem.bind(cartController)
+		cartController.updateCartItem.bind(cartController),
 	);
 	fastify.delete(
 		'/order-items/:id',
 		SwaggerDeleteOrderItem,
-		cartController.deleteCartItem.bind(cartController)
+		cartController.deleteCartItem.bind(cartController),
 	);
 };

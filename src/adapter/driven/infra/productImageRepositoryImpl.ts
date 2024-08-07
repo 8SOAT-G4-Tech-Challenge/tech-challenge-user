@@ -31,22 +31,6 @@ export class ProductImageRepositoryImpl implements ProductImageRepository {
 			});
 	}
 
-	async deleteProductImageById({
-		id,
-	}: GetProductImageByIdParams): Promise<void> {
-		await prisma.productImage
-			.delete({
-				where: {
-					id,
-				},
-			})
-			.catch(() => {
-				throw new DataNotFoundException(
-					`Product Image with id: ${id} not found`,
-				);
-			});
-	}
-
 	async deleteProductImageByProductId(productId: string): Promise<void> {
 		await prisma.productImage
 			.deleteMany({

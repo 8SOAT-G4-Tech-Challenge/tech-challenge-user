@@ -8,9 +8,6 @@ export interface ProductImageRepository {
 	createProductImage(
 		productImage: CreateProductImageParams,
 	): Promise<ProductImage>;
-	deleteProductImageById(
-		productImageId: GetProductImageByIdParams,
-	): Promise<void>;
 	getProductImageById(
 		productImageId: GetProductImageByIdParams,
 	): Promise<ProductImage>;
