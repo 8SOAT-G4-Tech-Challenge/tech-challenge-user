@@ -128,40 +128,40 @@ async function main() {
 	// Criar imagens de produtos
 	await Promise.all([
 		prisma.productImage.upsert({
-			where: { url: 'https://example.com/coca-cola.jpg' },
+			where: { url: `/uploads/${product1.id}/coca-cola.jpg` },
 			update: {},
 			create: {
-				url: 'https://example.com/coca-cola.jpg',
+				url: `/uploads/${product1.id}/coca-cola.jpg`,
 				product: {
 					connect: { id: product1.id },
 				},
 			},
 		}),
 		prisma.productImage.upsert({
-			where: { url: 'https://example.com/cheeseburguer.jpg' },
+			where: { url: `/uploads/${product2.id}/cheeseburguer.jpg` },
 			update: {},
 			create: {
-				url: 'https://example.com/cheeseburguer.jpg',
+				url: `/uploads/${product2.id}/cheeseburguer.jpg`,
 				product: {
 					connect: { id: product2.id },
 				},
 			},
 		}),
 		prisma.productImage.upsert({
-			where: { url: 'https://example.com/milkshake.jpg' },
+			where: { url: `/uploads/${product3.id}/milkshake.jpg` },
 			update: {},
 			create: {
-				url: 'https://example.com/milkshake.jpg',
+				url: `/uploads/${product3.id}/milkshake.jpg`,
 				product: {
 					connect: { id: product3.id },
 				},
 			},
 		}),
 		prisma.productImage.upsert({
-			where: { url: 'https://example.com/milkshake-2.jpg' },
+			where: { url: `/uploads/${product3.id}/milkshake-2.jpg` },
 			update: {},
 			create: {
-				url: 'https://example.com/milkshake-2.jpg',
+				url: `/uploads/${product3.id}/milkshake-2.jpg`,
 				product: {
 					connect: { id: product3.id },
 				},
