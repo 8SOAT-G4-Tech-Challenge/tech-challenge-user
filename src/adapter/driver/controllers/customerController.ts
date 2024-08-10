@@ -1,57 +1,110 @@
-import { Customer } from '@prisma/client';
-import { CustomerService } from '@services/customerService';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { handleError } from '../utils/error-handler';
+import { StatusCodes } from 'http-status-codes';
+
+import {
+	DeleteCustomerParams,
+	GetCustomerByPropertyParams,
+} from '@application/ports/input/customers';
+import logger from '@common/logger';
+import { handleError } from '@driver/errorHandler';
+import { Customer } from '@models/customer';
+import { CustomerService } from '@services/customerService';
+
+import { CustomerDto } from '../schemas/customerSchema';
 
 export class CustomerController {
-	constructor(private readonly customerService: CustomerService) { }
+	private readonly customerService: CustomerService;
+
+	constructor(customerService: CustomerService) {
+		this.customerService = customerService;
+	}
 
 	async getCustomers(req: FastifyRequest, reply: FastifyReply) {
 		try {
+			logger.info('Listing customers');
 			const customers: Customer[] = await this.customerService.getCustomers();
-			reply.code(201).send(customers);
+			reply.code(StatusCodes.OK).send(customers);
 		} catch (error) {
-			handleError(reply, error);
+			const errorMessage = 'Unexpected error when listing for customers';
+			logger.error(`${errorMessage}: ${error}`);
+			handleError(req, reply, error);
 		}
 	}
 
-	async getCustomerByProperty(req: FastifyRequest, reply: FastifyReply) {
+	async getCustomerByProperty(
+		req: FastifyRequest<{ Body: GetCustomerByPropertyParams }>,
+		reply: FastifyReply
+	) {
 		try {
 			const { id, cpf } = req.query as { id?: string; cpf?: string };
-	  
+
 			if (!(id || cpf)) {
-				return reply.code(400).send({ error: 'Bad Request', message: 'Please provide either an ID or a CPF to search for a customer.' });
+				reply.code(StatusCodes.BAD_REQUEST).send({
+					error: 'Bad Request',
+					message:
+						'Please provide either an ID or a CPF to search for a customer.',
+				});
 			}
-		  
+
 			if (id && cpf) {
-				return reply.code(400).send({ error: 'Bad Request', message: 'Please provide either an ID or a CPF, not both.' });
+				reply.code(StatusCodes.BAD_REQUEST).send({
+					error: 'Bad Request',
+					message: 'Please provide either an ID or a CPF, not both.',
+				});
 			}
-	  
+
 			const searchParam = id ? { id } : { cpf };
-    		const customer = await this.customerService.getCustomerByProperty(searchParam);
-	  
+			logger.info(`Listing customers by ${id ? 'ID' : 'CPF'}`);
+			const customer = await this.customerService.getCustomerByProperty(
+				searchParam
+			);
+
 			if (customer) {
-				reply.code(200).send(customer);
+				reply.code(StatusCodes.OK).send(customer);
 			} else {
-				reply.code(404).send({ error: 'Not Found', message: `Customer with ${id ? 'ID' : 'CPF'} ${id || cpf} not found` });
+				reply.code(StatusCodes.NOT_FOUND).send({
+					error: 'Not Found',
+					message: `Customer with ${id ? 'ID' : 'CPF'} ${id || cpf} not found`,
+				});
 			}
 		} catch (error) {
-			handleError(reply, error);
-		}
-	};
-
-	async createCustomer(req: FastifyRequest, reply: FastifyReply) {
-		try {
-			const { name, email, cpf }: Customer = req.body as Customer;
-
-			const createdCustomer: Customer = await this.customerService.createCustomer({ name, email, cpf });
-
-			reply.code(201).send(createdCustomer);
-		} catch (error) {
-			handleError(reply, error);
+			const errorMessage =
+				'Unexpected error when listing for customer by property';
+			logger.error(`${errorMessage}: ${error}`);
+			handleError(req, reply, error);
 		}
 	}
-};
 
+	async createCustomer(
+		req: FastifyRequest<{ Body: CustomerDto }>,
+		reply: FastifyReply
+	) {
+		try {
+			logger.info('Creating customer');
+			const createdCustomer: CustomerDto =
+				await this.customerService.createCustomer(req.body);
+			reply.code(StatusCodes.CREATED).send(createdCustomer);
+		} catch (error) {
+			const errorMessage = 'Unexpected when creating for customer';
+			logger.error(`${errorMessage}: ${error}`);
+			handleError(req, reply, error);
+		}
+	}
 
+	async deleteCustomer(
+		req: FastifyRequest<{ Body: DeleteCustomerParams }>,
+		reply: FastifyReply
+	): Promise<void> {
+		const { id } = req.params as { id: string };
 
+		try {
+			logger.info('Deleting customer');
+			await this.customerService.deleteCustomer({ id });
+			reply.code(200).send({ message: 'Customer successfully deleted' });
+		} catch (error) {
+			const errorMessage = 'Unexpected when deleting for customer';
+			logger.error(`${errorMessage}: ${error}`);
+			handleError(req, reply, error);
+		}
+	}
+}

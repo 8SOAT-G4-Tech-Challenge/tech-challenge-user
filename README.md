@@ -1,72 +1,55 @@
-# tech-challenger
+# FIAP Tech-Challenge 8SOAT - Fase 01
 
-## Configurações do Projeto
+## Objetivo do Projeto
 
-### Selecione uma pasta e clone o projeto
-- `git clone https://github.com/Winderson/tech-challenger.git`
+Esta solução tem como objetivo fornecer um sistema de controle de pedidos para uma lanchonete em expansão.
+Através de um totem de autoatendimento, os clientes poderão criar seus próprios pedidos,
+realizar pagamentos de forma integrada e acompanhar o status dos pedidos em tempo real.
+Isso visa otimizar a eficiência no atendimento, reduzir erros e aumentar a satisfação dos clientes,
+suportando o crescimento contínuo da lanchonete.
 
-### Faça a instalação das dependências
-- `npm install`
+## Principais funcionalidades:
 
-### Rodando o projeto
-- `npm run dev`
+- **Interface de Pedido**: Permitir que os clientes façam pedidos personalizados, com a opção de se identificarem ou não, e selecionem itens como lanches, acompanhamentos, bebidas e sobremesas.
+- **Pagamento Integrado**: Facilitar o pagamento dos pedidos via QRCode do Mercado Pago.
+- **Acompanhamento do Pedido**: Exibir o status do pedido em tempo real (Recebido, Em preparação, Pronto, Finalizado) tanto para os clientes quanto para a equipe da cozinha.
 
+## Requerimentos
 
-### Swagger
-- `http://localhost:3333/docs`
+- Node versão 20;
+- [Docker](https://docs.docker.com/get-docker/);
+- Docker Compose
 
-### ESLint
+## Documentação
 
-- Instalar extensão "ESLint" para VSCode
-- Habilitar no VSCode para correção automatica ao salvar:
-- Acessar o Menu -> View - Command Palette -> Preferences: Open User Settings (JSON) e adicionar a seguinte linha, caso não tenha:
+- Para uma documentação mais detalhada sobre DDD, linguagem ubíqua e event storming, acesse o link do Miro:
+  [Documentação do Projeto](https://miro.com/app/board/uXjVK2WZuMs=/)
 
-```
-	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true,
-	},
-```
+## Diagrama do Banco de Dados
 
-### Variável de ambiente
-- Criar arquivo .env utilizando arquivo .env-example como base, onde já existe o 
-caminho para conexão com o banco de dados criado através do docker-compose.
+- [Diagrama ER](https://miro.com/app/board/uXjVK0gj0bg=/)
 
-### Banco de Dados - Docker
-- Caso o docker esteja instalado localmente, será necessário alterar as portas do
-serviço ou parar o serviço para executar através do docker.
-- Iniciar o serviço do Docker (Docker Desktop, no caso de Windows).
-- Entrar na pasta raiz do projeto e executar o comando:
-```docker-compose up -d```
+## Execução
 
-### Conexão com PGAdmin ou qualquer outra ferramenta de administração de banco de dados
+Para executar a aplicação siga a seguinte [documentação](docs/INSTALACAO.md), que possui todos os passos para iniciar e executar a aplicação localmente.
 
-- Observação: É possível realizar a visualização das tabelas utilizando o Prisma Studio, passo abaixo.
+## Desenvolvimento
 
+Para realizar o desenvolvimento de novas features é importante fazer as configurações descritas na [documentação](docs/DESENVOLVIMENTO.md).
 
-- Registrar um novo servidor
-- Escolha um nome para seu servidor (livre escolha)
-- No menu conexões adicionar as seguintes configurações, conforme docker-compose:
-- Host name/address: localhost
-- Port: 5432
-- Maintenance database: tech-challenger
-- Username: postgres
-- Password: docker
+## Endpoints
 
-### ORM Prisma
-- Documentação:
-`https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/using-prisma-migrate-typescript-postgresql`
+Esta API fornece documentação no padrão OpenAPI através do Swagger.
+Os endpoints disponíveis, suas descrições e dados necessários para requisição podem ser consultados e testados em `/docs`.
 
-- caso os comandos não funcionem, utilizar `npx` ou invés de `npm`.
+#### Melhorias e implementações futuras:
 
-- Visualização das tabelas:
-`npm prisma studio`
+- **Gerenciamento de Clientes e Produtos**: Permitir ao estabelecimento gerenciar campanhas promocionais, produtos e categorias através de um painel administrativo.
 
-- Para rodar as migrations:
-`npm prisma migrate dev`
+## Participantes do Projeto
 
-
-
-
-
-
-
+- Amanda Maschio - RM 357734
+- Jackson Antunes - RM357311
+- Lucas Accurcio - RM 357142
+- Vanessa Freitas - RM 357999
+- Winderson Santos - RM 357315

@@ -4,4 +4,5 @@ export interface Customer {
 	email: string | null;
 	cpf: string;
 	createdAt: Date;
+	updatedAt: Date;
 }

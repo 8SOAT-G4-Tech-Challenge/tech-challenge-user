@@ -1,9 +1,10 @@
 export interface User {
 	id: string;
-	name: string;
+	name: string | null;
 	email: string;
 	password: string;
-	sessionToken: string;
+	sessionToken: string | null;
 	isAdmin: boolean;
 	createdAt: Date;
+	updatedAt: Date;
 }
