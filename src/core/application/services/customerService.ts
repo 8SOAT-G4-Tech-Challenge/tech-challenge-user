@@ -2,6 +2,10 @@ import { StatusCodes } from 'http-status-codes';
 
 import { InvalidCustomerException } from '@exceptions/invalidCustomerException';
 import { Customer } from '@models/customer';
+import {
+	DeleteCustomerParams,
+	GetCustomerByPropertyParams,
+} from '@ports/input/customers';
 import { CustomerRepository } from '@ports/repository/customerRepository';
 import {
 	CustomerDto,
@@ -20,16 +24,19 @@ export class CustomerService {
 		return costumers;
 	}
 
-	async getCustomerByProperty(property: {
-		id?: string;
-		cpf?: string;
-	}): Promise<Customer | null> {
+	async getCustomerByProperty(
+		getCustomerByPropertyParams: GetCustomerByPropertyParams
+	): Promise<Customer | null> {
 		try {
-			if ('id' in property) {
-				return await this.customerRepository.getCustomerById(property.id!);
+			if ('id' in getCustomerByPropertyParams) {
+				return await this.customerRepository.getCustomerById(
+					getCustomerByPropertyParams.id!
+				);
 			}
-			if ('cpf' in property) {
-				return await this.customerRepository.getCustomerByCpf(property.cpf!);
+			if ('cpf' in getCustomerByPropertyParams) {
+				return await this.customerRepository.getCustomerByCpf(
+					getCustomerByPropertyParams.cpf!
+				);
 			}
 			throw new InvalidCustomerException(
 				'Provide a valid property to perform the search.'
@@ -56,15 +63,20 @@ export class CustomerService {
 		return this.customerRepository.createCustomer(customerDto);
 	}
 
-	async deleteCustomer(id: string): Promise<void> {
-		const existingCustomer = await this.customerRepository.getCustomerById(id);
+	async deleteCustomer(
+		deleteCustomerParams: DeleteCustomerParams
+	): Promise<void> {
+		const existingCustomer = await this.customerRepository.getCustomerById(
+			deleteCustomerParams.id
+		);
+
 		if (!existingCustomer) {
 			throw new InvalidCustomerException(
-				`Customer with ID ${id} not found.`,
+				`Customer with ID ${deleteCustomerParams.id} not found.`,
 				StatusCodes.NOT_FOUND
 			);
 		}
 
-		return this.customerRepository.deleteCustomer(id);
+		return this.customerRepository.deleteCustomer(deleteCustomerParams);
 	}
 }

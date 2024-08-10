@@ -1,7 +1,8 @@
+import { DeleteCustomerParams } from '@application/ports/input/customers';
+import { CustomerRepository } from '@application/ports/repository/customerRepository';
 import { prisma } from '@driven/infra/lib/prisma';
-import { CustomerDto } from '@src/adapter/driver/schemas/customerSchema';
-import { CustomerRepository } from '@src/core/application/ports/repository/customerRepository';
-import { Customer } from '@src/core/domain/models/customer';
+import { CustomerDto } from '@driver/schemas/customerSchema';
+import { Customer } from '@models/customer';
 
 export class CustomerRepositoryImpl implements CustomerRepository {
 	async getCustomers(): Promise<Customer[]> {
@@ -59,9 +60,11 @@ export class CustomerRepositoryImpl implements CustomerRepository {
 		return createdCustomer;
 	}
 
-	async deleteCustomer(id: string): Promise<void> {
+	async deleteCustomer(
+		deleteCustomerParams: DeleteCustomerParams
+	): Promise<void> {
 		await prisma.customer.delete({
-			where: { id },
+			where: { id: deleteCustomerParams.id },
 		});
 	}
 }

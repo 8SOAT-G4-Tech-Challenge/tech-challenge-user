@@ -4,6 +4,7 @@ import {
 	CartService,
 	CustomerService,
 	OrderService,
+	PaymentOrderService,
 	ProductCategoryService,
 	ProductService,
 	UserService,
@@ -26,7 +27,9 @@ import {
 	ProductController,
 	UserController,
 } from '@driver/controllers';
+import { PaymentOrderRepositoryImpl } from '@src/adapter/driven/infra/paymentOrderRepositoryImpl';
 
+import { PaymentOrderController } from '../controllers/paymentOrderController';
 import {
 	SwaggerCreateCustomers,
 	SwaggerDeleteCustomers,
@@ -41,6 +44,12 @@ import {
 	SwaggerUpdateOrder,
 } from './doc/order';
 import { SwaggerDeleteOrderItem, SwaggerUpdateCartItem } from './doc/orderItem';
+import {
+	SwaggerGetPaymentOrderById,
+	SwaggerGetPaymentOrderByOrderId,
+	SwaggerGetPaymentOrders,
+	SwaggerPaymentOrderMakePayment,
+} from './doc/paymentOrders';
 import {
 	SwaggerCreateProducts,
 	SwaggerDeleteProducts,
@@ -57,6 +66,7 @@ const userRepository = new UserRepositoryImpl();
 const customerRepository = new CustomerRepositoryImpl();
 const productRepository = new ProductRepositoryImpl();
 const orderRepository = new OrderRepositoryImpl();
+const paymentOrderRepository = new PaymentOrderRepositoryImpl();
 const productCategoryRepository = new ProductCategoryRepositoryImpl();
 const productImageRepository = new ProductImageRepositoryImpl();
 const fileSystemStorage = new FileSystemStorageImpl();
@@ -80,6 +90,11 @@ const cartService = new CartService(
 	orderRepository,
 	productRepository,
 );
+const paymentOrderService = new PaymentOrderService(
+	paymentOrderRepository,
+	orderRepository,
+	orderService
+);
 
 const userController = new UserController(userService);
 const customerController = new CustomerController(customerService);
@@ -88,6 +103,7 @@ const productCategoryController = new ProductCategoryController(
 );
 const productController = new ProductController(productService);
 const orderController = new OrderController(orderService);
+const paymentOrderController = new PaymentOrderController(paymentOrderService);
 const cartController = new CartController(cartService);
 
 // Usem esse site para gerar o swagger a partir do JSON -> https://roger13.github.io/SwagDefGen/
@@ -185,5 +201,25 @@ export const routes = async (fastify: FastifyInstance) => {
 		'/order-items/:id',
 		SwaggerDeleteOrderItem,
 		cartController.deleteCartItem.bind(cartController),
+	);
+	fastify.get(
+		'/payment-orders',
+		SwaggerGetPaymentOrders,
+		paymentOrderController.getPaymentOrders.bind(paymentOrderController)
+	);
+	fastify.get(
+		'/payment-orders/:id',
+		SwaggerGetPaymentOrderById,
+		paymentOrderController.getPaymentOrderById.bind(paymentOrderController)
+	);
+	fastify.get(
+		'/orders/:orderId/payment-orders',
+		SwaggerGetPaymentOrderByOrderId,
+		paymentOrderController.getPaymentOrderByOrderId.bind(paymentOrderController)
+	);
+	fastify.post(
+		'/payment-orders/make-payment/:orderId',
+		SwaggerPaymentOrderMakePayment,
+		paymentOrderController.makePayment.bind(paymentOrderController)
 	);
 };
