@@ -61,6 +61,7 @@ import {
 } from './doc/product';
 import {
 	SwaggerCreateProductCategories,
+	SwaggerDeleteProductCategories,
 	SwaggerGetProductCategories,
 } from './doc/productCategory';
 import { SwaggerGetUsers } from './doc/user';
@@ -78,20 +79,20 @@ const cartRepository = new CartRepositoryImpl();
 const userService = new UserService(userRepository);
 const customerService = new CustomerService(customerRepository);
 const productCategoryService = new ProductCategoryService(
-	productCategoryRepository,
+	productCategoryRepository
 );
 const productService = new ProductService(
 	productCategoryService,
 	productRepository,
 	productImageRepository,
-	fileSystemStorage,
+	fileSystemStorage
 );
 
 const orderService = new OrderService(orderRepository, cartRepository);
 const cartService = new CartService(
 	cartRepository,
 	orderRepository,
-	productRepository,
+	productRepository
 );
 const paymentOrderService = new PaymentOrderService(
 	paymentOrderRepository,
@@ -102,7 +103,7 @@ const paymentOrderService = new PaymentOrderService(
 const userController = new UserController(userService);
 const customerController = new CustomerController(customerService);
 const productCategoryController = new ProductCategoryController(
-	productCategoryService,
+	productCategoryService
 );
 const productController = new ProductController(productService);
 const orderController = new OrderController(orderService);
@@ -114,96 +115,103 @@ export const routes = async (fastify: FastifyInstance) => {
 	fastify.get(
 		'/users',
 		SwaggerGetUsers,
-		userController.getUsers.bind(userController),
+		userController.getUsers.bind(userController)
 	);
 	fastify.get(
 		'/customers',
 		SwaggerGetCustomers,
-		customerController.getCustomers.bind(customerController),
+		customerController.getCustomers.bind(customerController)
 	);
 	fastify.get(
 		'/customers/property',
 		SwaggerGetCustomersProperty,
-		customerController.getCustomerByProperty.bind(customerController),
+		customerController.getCustomerByProperty.bind(customerController)
 	);
 	fastify.post(
 		'/customers',
 		SwaggerCreateCustomers,
-		customerController.createCustomer.bind(customerController),
+		customerController.createCustomer.bind(customerController)
 	);
 	fastify.delete(
 		'/customers/:id',
 		SwaggerDeleteCustomers,
-		customerController.deleteCustomer.bind(customerController),
+		customerController.deleteCustomer.bind(customerController)
 	);
 	fastify.get(
 		'/products',
 		SwaggerGetProducts,
-		productController.getProducts.bind(productController),
+		productController.getProducts.bind(productController)
 	);
 	fastify.post(
 		'/products',
 		SwaggerCreateProducts,
-		productController.createProducts.bind(productController),
+		productController.createProducts.bind(productController)
 	);
 	fastify.put(
 		'/products/:id',
 		SwaggerUpdateProducts,
-		productController.updateProducts.bind(productController),
+		productController.updateProducts.bind(productController)
 	);
 	fastify.delete(
 		'/products/:id',
 		SwaggerDeleteProducts,
-		productController.deleteProducts.bind(productController),
+		productController.deleteProducts.bind(productController)
 	);
 	fastify.post(
 		'/product-categories',
 		SwaggerCreateProductCategories,
 		productCategoryController.createProductCategory.bind(
-			productCategoryController,
-		),
+			productCategoryController
+		)
 	);
 	fastify.get(
 		'/product-categories',
 		SwaggerGetProductCategories,
 		productCategoryController.getProductCategories.bind(
-			productCategoryController,
-		),
+			productCategoryController
+		)
+	);
+	fastify.delete(
+		'/product-categories/:id',
+		SwaggerDeleteProductCategories,
+		productCategoryController.deleteProductCategories.bind(
+			productCategoryController
+		)
 	);
 	fastify.get(
 		'/orders',
 		SwaggerGetOrders,
-		orderController.getOrders.bind(orderController),
+		orderController.getOrders.bind(orderController)
 	);
 	fastify.get(
 		'/orders/:id',
 		SwaggerGetOrdersById,
-		orderController.getOrderById.bind(orderController),
+		orderController.getOrderById.bind(orderController)
 	);
 	fastify.post(
 		'/orders',
 		SwaggerCreateOrder,
-		orderController.createOrder.bind(orderController),
+		orderController.createOrder.bind(orderController)
 	);
 	fastify.put(
 		'/orders/:id',
 		SwaggerUpdateOrder,
-		orderController.updateOrder.bind(orderController),
+		orderController.updateOrder.bind(orderController)
 	);
 	fastify.post(
 		'/order-items/:orderId',
 		SwaggerAddItemToCart,
-		cartController.addItemToCart.bind(cartController),
+		cartController.addItemToCart.bind(cartController)
 	);
 	fastify.put(
 		'/order-items/:id',
 		SwaggerUpdateCartItem,
-		cartController.updateCartItem.bind(cartController),
+		cartController.updateCartItem.bind(cartController)
 	);
 	fastify.delete(
 		'/order-items/:id',
 		SwaggerDeleteOrderItem,
-		cartController.deleteCartItem.bind(cartController),
+		cartController.deleteCartItem.bind(cartController)
 	);
 	fastify.get(
 		'/payment-orders',
