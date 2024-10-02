@@ -21,6 +21,9 @@ export const SwaggerGetPaymentOrders = {
 						status: {
 							type: 'string',
 						},
+						qrData: {
+							type: 'string',
+						},
 						paidAt: {
 							type: 'string',
 							format: 'datetime',
@@ -91,6 +94,9 @@ export const SwaggerGetPaymentOrderById = {
 						format: 'uuid',
 					},
 					status: {
+						type: 'string',
+					},
+					qrData: {
 						type: 'string',
 					},
 					paidAt: {
@@ -174,6 +180,9 @@ export const SwaggerGetPaymentOrderByOrderId = {
 						format: 'uuid',
 					},
 					status: {
+						type: 'string',
+					},
+					qrData: {
 						type: 'string',
 					},
 					paidAt: {
