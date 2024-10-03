@@ -1,14 +1,14 @@
-name: Docker Build and Push for API
+name: Docker Build and Push for Migrations
 
 on:
   push:
     paths:
-      - 'src/**'
+      - 'prisma/**'
     branches: ['develop']
 
 jobs:
-  docker-api:
-    name: 'Build and Push for API'
+  docker-migration:
+    name: 'Build and Push for Migration'
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,7 @@ jobs:
         with:
           push: true
           context: .
-          file: Dockerfile.api
+          file: Dockerfile.migration
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/tech-challenge-api:latest
-            ${{ secrets.DOCKER_USERNAME }}/tech-challenge-api:${{ steps.generate_tag.outputs.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/tech-challenge-migration:latest
+            ${{ secrets.DOCKER_USERNAME }}/tech-challenge-migration:${{ steps.generate_tag.outputs.sha }}
