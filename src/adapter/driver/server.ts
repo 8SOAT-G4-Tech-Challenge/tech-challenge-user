@@ -19,7 +19,7 @@ app.register(fastifyCors, {
 
 app.register(fastifySwagger, {
 	openapi: {
-		openapi: '3.0.0',
+		openapi: '3.0.1',
 	},
 	swagger: {
 		consumes: ['application/json', 'multipart/form-data'],
