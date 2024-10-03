@@ -38,12 +38,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker images
+      - name: Build and Push Docker images
         uses: docker/build-push-action@v6
         with:
           push: true
           context: .
           file: Dockerfile.migration
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/tech-challenge-migration:latest
-            ${{ secrets.DOCKER_USERNAME }}/tech-challenge-migration:${{ steps.generate_tag.outputs.sha }}
+          tags: lucasaccurcio/tech-challenge-api:${{ steps.generate_tag.outputs.sha }},lucasaccurcio/tech-challenge-api:latest
