@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: prisma-migrate
-          image: lucasaccurcio/tech-challenge-migration:v2
+          image: lucasaccurcio/tech-challenge-migration:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_PASSWORD
