@@ -1,6 +1,6 @@
 import { productCategoryCreateSchema } from '@driver/schemas/productCategorySchema';
+import { ProductCategory } from '@models/productCategory';
 import { ProductCategoryRepository } from '@ports/repository/productCategoryRepository';
-import { ProductCategory } from '@prisma/client';
 
 import { InvalidProductCategoryException } from '../exceptions/invalidProductCategoryException';
 import { DeleteProductCategoryParams } from '../ports/input/productCategory';
@@ -41,7 +41,7 @@ export class ProductCategoryService {
 
 		if (!existingProductCategory) {
 			throw new InvalidProductCategoryException(
-				`Customer with ID ${deleteProductCategoryParams.id} not found.`
+				`Categ Product with ID ${deleteProductCategoryParams.id} not found.`
 			);
 		}
 

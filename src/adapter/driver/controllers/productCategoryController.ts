@@ -50,7 +50,7 @@ export class ProductCategoryController {
 			logger.info('Deleting product category');
 			await this.productCategoryService.deleteProductCategory({ id });
 			reply
-				.code(StatusCodes.OK)
+				.code(StatusCodes.NO_CONTENT)
 				.send({ message: 'Product category successfully deleted' });
 		} catch (error) {
 			const errorMessage = 'Unexpected when deleting for product category';
