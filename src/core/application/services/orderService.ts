@@ -13,6 +13,7 @@ import {
 import { CreateOrderResponse } from '@ports/output/orders';
 import { CartRepository } from '@ports/repository/cartRepository';
 import { OrderRepository } from '@ports/repository/orderRepository';
+import { OrderStatusType } from '@src/core/domain/types/orderStatusType';
 
 export class OrderService {
 	private readonly orderRepository: OrderRepository;
@@ -42,7 +43,7 @@ export class OrderService {
 
 		logger.info('Searching all orders');
 		const orders = await this.orderRepository.getOrders();
-		return orders;
+		return this.sortOrdersByStatus(orders);
 	}
 
 	async getOrderById({ id }: GetOrderByIdParams): Promise<Order> {
@@ -56,6 +57,21 @@ export class OrderService {
 
 		logger.info(`Searching order by Id: ${id}`);
 		const orderFound = await this.orderRepository.getOrderById({ id });
+
+		return orderFound;
+	}
+
+	async getOrderCreatedById({ id }: GetOrderByIdParams): Promise<Order> {
+		const { success } = getOrderByIdSchema.safeParse({ id });
+
+		if (!success) {
+			throw new InvalidOrderException(
+				`Error listing order by Id. Invalid Id: ${id}`
+			);
+		}
+
+		logger.info(`Searching order created by Id: ${id}`);
+		const orderFound = await this.orderRepository.getOrderCreatedById({ id });
 
 		return orderFound;
 	}
@@ -111,5 +127,26 @@ export class OrderService {
 
 		logger.info(`Total value from order ${id} is ${totalValue}`);
 		return totalValue;
+	}
+
+	private sortOrdersByStatus(orders: Order[]): Order[] {
+		const statusPriority: OrderStatusType[] = [
+			'ready',
+			'preparation',
+			'received',
+			'created',
+		];
+
+		const priorityMap = new Map(
+			statusPriority.map((status, index) => [status, index])
+		);
+
+		return orders.sort((a, b) => {
+			const priorityA =
+				priorityMap.get(a.status as OrderStatusType) ?? Infinity;
+			const priorityB =
+				priorityMap.get(b.status as OrderStatusType) ?? Infinity;
+			return priorityA - priorityB;
+		});
 	}
 }

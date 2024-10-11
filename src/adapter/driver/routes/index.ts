@@ -3,6 +3,7 @@ import { FastifyInstance } from 'fastify';
 import {
 	CartService,
 	CustomerService,
+	MercadoPagoService,
 	OrderService,
 	PaymentOrderService,
 	ProductCategoryService,
@@ -28,6 +29,7 @@ import {
 	UserController,
 } from '@driver/controllers';
 import { PaymentOrderRepositoryImpl } from '@src/adapter/driven/infra/paymentOrderRepositoryImpl';
+import { EnvironmentService } from '@src/core/common/environmentService';
 
 import { PaymentOrderController } from '../controllers/paymentOrderController';
 import {
@@ -94,10 +96,19 @@ const cartService = new CartService(
 	orderRepository,
 	productRepository
 );
+
+const environmentService = new EnvironmentService();
+
+const mercadoPagoService = new MercadoPagoService(
+	cartService,
+	productService,
+	environmentService
+);
+
 const paymentOrderService = new PaymentOrderService(
 	paymentOrderRepository,
-	orderRepository,
-	orderService
+	orderService,
+	mercadoPagoService
 );
 
 const userController = new UserController(userService);
