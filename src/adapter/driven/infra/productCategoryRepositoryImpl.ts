@@ -2,10 +2,10 @@ import { prisma } from '@driven/infra/lib/prisma';
 import { ProductCategory } from '@models/productCategory';
 import { ProductCategoryRepository } from '@ports/repository/productCategoryRepository';
 import { DeleteProductCategoryParams } from '@src/core/application/ports/input/productCategory';
+import { Product } from '@src/core/domain/models/product';
 
 export class ProductCategoryRepositoryImpl
-	implements ProductCategoryRepository
-{
+implements ProductCategoryRepository {
 	async getProductCategories(): Promise<ProductCategory[]> {
 		return prisma.productCategory.findMany({
 			select: {
@@ -18,7 +18,7 @@ export class ProductCategoryRepositoryImpl
 	}
 
 	async createProductCategory(
-		productCategory: ProductCategory
+		productCategory: ProductCategory,
 	): Promise<ProductCategory> {
 		return prisma.productCategory.create({
 			data: productCategory,
@@ -26,7 +26,7 @@ export class ProductCategoryRepositoryImpl
 	}
 
 	async getProductCategoryByName(
-		nameFilter: string
+		nameFilter: string,
 	): Promise<ProductCategory | null> {
 		return prisma.productCategory.findFirst({
 			where: {
@@ -52,8 +52,28 @@ export class ProductCategoryRepositoryImpl
 		return productCategory;
 	}
 
+	async getFirstProductByCategory(id: string): Promise<Product | null> {
+		const productCategory = await prisma.productCategory.findUnique({
+			where: { id },
+			include: {
+				products: {
+					take: 1,
+				},
+			},
+		});
+
+		if (productCategory?.products && productCategory.products.length > 0) {
+			return {
+				...productCategory.products[0],
+				value: parseFloat(productCategory.products[0].value.toString()),
+			} as Product;
+		}
+
+		return null;
+	}
+
 	async deleteProductCategories(
-		deleteProductCategoryParams: DeleteProductCategoryParams
+		deleteProductCategoryParams: DeleteProductCategoryParams,
 	): Promise<void> {
 		await prisma.productCategory.delete({
 			where: { id: deleteProductCategoryParams.id },

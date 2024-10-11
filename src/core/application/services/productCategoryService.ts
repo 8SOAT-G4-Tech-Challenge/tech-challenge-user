@@ -17,36 +17,45 @@ export class ProductCategoryService {
 	}
 
 	async getProductCategoryByName(
-		category: string
+		category: string,
 	): Promise<ProductCategory | null> {
 		return this.productCategoryRepository.getProductCategoryByName(category);
 	}
 
 	async createProductCategory(
-		productCategoryData: any
+		productCategoryData: any,
 	): Promise<ProductCategory> {
 		productCategoryCreateSchema.parse(productCategoryData);
 		return this.productCategoryRepository.createProductCategory(
-			productCategoryData
+			productCategoryData,
 		);
 	}
 
 	async deleteProductCategory(
-		deleteProductCategoryParams: DeleteProductCategoryParams
-	): Promise<void> {
+		deleteProductCategoryParams: DeleteProductCategoryParams,
+	): Promise<void | ProductCategory> {
 		const existingProductCategory =
 			await this.productCategoryRepository.getProductCategoryById(
-				deleteProductCategoryParams.id
+				deleteProductCategoryParams.id,
 			);
 
 		if (!existingProductCategory) {
 			throw new InvalidProductCategoryException(
-				`Categ Product with ID ${deleteProductCategoryParams.id} not found.`
+				`Category Product with ID ${deleteProductCategoryParams.id} not found.`,
 			);
 		}
 
+		const productInProductCategory =
+			await this.productCategoryRepository.getFirstProductByCategory(
+				deleteProductCategoryParams.id,
+			);
+
+		if (productInProductCategory) {
+			return productInProductCategory;
+		}
+
 		return this.productCategoryRepository.deleteProductCategories(
-			deleteProductCategoryParams
+			deleteProductCategoryParams,
 		);
 	}
 }

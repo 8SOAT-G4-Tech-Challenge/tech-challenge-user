@@ -48,7 +48,13 @@ export class ProductCategoryController {
 
 		try {
 			logger.info('Deleting product category');
-			await this.productCategoryService.deleteProductCategory({ id });
+			const response = await this.productCategoryService.deleteProductCategory({ id });
+			if (response) {
+				reply.code(StatusCodes.CONFLICT).send({
+					error: 'Conflict',
+					message: 'Product category has products associated',
+				});
+			}
 			reply
 				.code(StatusCodes.NO_CONTENT)
 				.send({ message: 'Product category successfully deleted' });
