@@ -12,5 +12,5 @@ export const updateOrderSchema = z
 	.object({
 		id: z.string(),
 		status: z.nativeEnum(OrderStatusEnum),
-	})
-	.required();
+		readableId: z.string().optional(),
+	});
