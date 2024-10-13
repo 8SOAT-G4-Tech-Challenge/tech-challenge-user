@@ -1,6 +1,9 @@
 import { productCategoryCreateSchema } from '@driver/schemas/productCategorySchema';
+import { ProductCategory } from '@models/productCategory';
 import { ProductCategoryRepository } from '@ports/repository/productCategoryRepository';
-import { ProductCategory } from '@prisma/client';
+
+import { InvalidProductCategoryException } from '../exceptions/invalidProductCategoryException';
+import { DeleteProductCategoryParams } from '../ports/input/productCategory';
 
 export class ProductCategoryService {
 	private readonly productCategoryRepository;
@@ -14,17 +17,45 @@ export class ProductCategoryService {
 	}
 
 	async getProductCategoryByName(
-		category: string
+		category: string,
 	): Promise<ProductCategory | null> {
 		return this.productCategoryRepository.getProductCategoryByName(category);
 	}
 
 	async createProductCategory(
-		productCategoryData: any
+		productCategoryData: any,
 	): Promise<ProductCategory> {
 		productCategoryCreateSchema.parse(productCategoryData);
 		return this.productCategoryRepository.createProductCategory(
-			productCategoryData
+			productCategoryData,
+		);
+	}
+
+	async deleteProductCategory(
+		deleteProductCategoryParams: DeleteProductCategoryParams,
+	): Promise<void | ProductCategory> {
+		const existingProductCategory =
+			await this.productCategoryRepository.getProductCategoryById(
+				deleteProductCategoryParams.id,
+			);
+
+		if (!existingProductCategory) {
+			throw new InvalidProductCategoryException(
+				`Category Product with ID ${deleteProductCategoryParams.id} not found.`,
+			);
+		}
+
+		const productInProductCategory =
+			await this.productCategoryRepository.getFirstProductByCategory(
+				deleteProductCategoryParams.id,
+			);
+
+		if (productInProductCategory) {
+			return productInProductCategory;
+		}
+
+		return this.productCategoryRepository.deleteProductCategories(
+			deleteProductCategoryParams,
 		);
 	}
 }
