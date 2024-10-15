@@ -21,6 +21,9 @@ export const SwaggerGetPaymentOrders = {
 						status: {
 							type: 'string',
 						},
+						qrData: {
+							type: 'string',
+						},
 						paidAt: {
 							type: 'string',
 							format: 'datetime',
@@ -91,6 +94,9 @@ export const SwaggerGetPaymentOrderById = {
 						format: 'uuid',
 					},
 					status: {
+						type: 'string',
+					},
+					qrData: {
 						type: 'string',
 					},
 					paidAt: {
@@ -176,6 +182,9 @@ export const SwaggerGetPaymentOrderByOrderId = {
 					status: {
 						type: 'string',
 					},
+					qrData: {
+						type: 'string',
+					},
 					paidAt: {
 						type: 'string',
 						format: 'datetime',
@@ -229,8 +238,9 @@ export const SwaggerGetPaymentOrderByOrderId = {
 
 export const SwaggerPaymentOrderMakePayment = {
 	schema: {
-		summary: 'Make a payment for an order (fake checkout)',
-		description: 'Processes the payment for the specified order',
+		summary: 'Make a payment for an order',
+		description:
+			'Creates the payment order and integrates with Mercado Pago to obtain the Payment QR Code',
 		tags: ['Payment Order'],
 		params: {
 			type: 'object',
@@ -248,7 +258,33 @@ export const SwaggerPaymentOrderMakePayment = {
 				description: 'Order payment successfully completed',
 				type: 'object',
 				properties: {
-					message: {
+					id: {
+						type: 'string',
+						format: 'uuid',
+					},
+					orderId: {
+						type: 'string',
+						format: 'uuid',
+					},
+					status: {
+						type: 'string',
+					},
+					qrData: {
+						type: 'string',
+					},
+					paidAt: {
+						type: 'string',
+						format: 'datetime',
+					},
+					createdAt: {
+						type: 'string',
+						format: 'datetime',
+					},
+					updatedAt: {
+						type: 'string',
+						format: 'datetime',
+					},
+					value: {
 						type: 'string',
 					},
 				},
@@ -264,6 +300,114 @@ export const SwaggerPaymentOrderMakePayment = {
 			},
 			500: {
 				description: 'Unexpected error when making payment',
+				type: 'object',
+				properties: {
+					path: {
+						type: 'string',
+					},
+					status: {
+						type: 'string',
+					},
+					message: {
+						type: 'string',
+					},
+					details: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+			},
+		},
+	},
+};
+
+export const SwaggerPaymentOrderProcessPaymentNotifications = {
+	schema: {
+		summary: 'Process payment notifications for an order',
+		description:
+			'Receives and processes payment notifications from the payment gateway',
+		tags: ['Payment Order'],
+		body: {
+			type: 'object',
+			required: [
+				'amount',
+				'caller_id',
+				'client_id',
+				'created_at',
+				'id',
+				'state',
+			],
+			properties: {
+				amount: {
+					type: 'number',
+					description: 'Payment amount',
+				},
+				caller_id: {
+					type: 'number',
+					description: 'Payment caller identifier',
+				},
+				client_id: {
+					type: 'number',
+					description: 'Payment client identifier',
+				},
+				created_at: {
+					type: 'string',
+					description: 'Creation date',
+				},
+				id: {
+					type: 'string',
+					description: 'Notification identifier',
+				},
+				payment: {
+					type: 'object',
+					properties: {
+						id: {
+							type: 'number',
+							description: 'Payment identifier',
+						},
+						state: {
+							type: 'string',
+							description: 'Payment state',
+						},
+						type: {
+							type: 'string',
+							description: 'Payment method',
+						},
+					},
+				},
+				state: {
+					type: 'string',
+					description: 'Notification state',
+				},
+				additional_info: {
+					type: 'object',
+					properties: {
+						external_reference: {
+							type: 'string',
+							description: 'External reference information',
+						},
+					},
+				},
+			},
+		},
+		response: {
+			204: {
+				description: 'Processed payment notification',
+				type: 'null',
+			},
+			400: {
+				description: 'Bad Request',
+				type: 'object',
+				properties: {
+					message: {
+						type: 'string',
+					},
+				},
+			},
+			500: {
+				description: 'Unexpected error when process payment',
 				type: 'object',
 				properties: {
 					path: {

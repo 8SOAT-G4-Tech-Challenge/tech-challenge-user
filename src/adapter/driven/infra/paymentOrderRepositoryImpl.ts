@@ -2,9 +2,10 @@ import {
 	CreatePaymentOrderParams,
 	GetPaymentOrderByIdParams,
 	GetPaymentOrderByOrderIdParams,
+	UpdatePaymentOrderParams,
 } from '@application/ports/input/paymentOrders';
 import { PaymentOrderRepository } from '@application/ports/repository/paymentOrderRepository';
-import { PaymentOrderStatusEnum } from '@domain/enums/paymentOrderEnum';
+import { PaymentOrderStatusEnum } from '@application/enumerations/paymentOrderEnum';
 import { prisma } from '@driven/infra/lib/prisma';
 import { PaymentOrder } from '@models/paymentOrder';
 
@@ -88,15 +89,31 @@ export class PaymentOrderRepositoryImpl implements PaymentOrderRepository {
 		const createdPaymentOrder = await prisma.paymentOrder.create({
 			data: {
 				orderId: createPaymentOrderParams.orderId,
-				status: PaymentOrderStatusEnum.approved,
+				qrData: createPaymentOrderParams.qrData,
+				status: PaymentOrderStatusEnum.pending,
 				value: createPaymentOrderParams.value,
-				paidAt: new Date(),
 			},
 		});
 
 		return {
 			...createdPaymentOrder,
 			value: parseFloat(createdPaymentOrder.value.toString()),
+		};
+	}
+
+	async updatePaymentOrder(
+		updatePaymentOrderParams: UpdatePaymentOrderParams
+	): Promise<PaymentOrder> {
+		const updatePaymentOrder = await prisma.paymentOrder.update({
+			where: {
+				id: updatePaymentOrderParams.id,
+			},
+			data: updatePaymentOrderParams,
+		});
+
+		return {
+			...updatePaymentOrder,
+			value: parseFloat(updatePaymentOrder.value.toString()),
 		};
 	}
 }

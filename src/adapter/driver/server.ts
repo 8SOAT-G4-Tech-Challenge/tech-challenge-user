@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import fastify from 'fastify';
 
 import logger from '@common/logger';
@@ -16,6 +18,9 @@ app.register(fastifyCors, {
 });
 
 app.register(fastifySwagger, {
+	openapi: {
+		openapi: '3.0.1',
+	},
 	swagger: {
 		consumes: ['application/json', 'multipart/form-data'],
 		produces: ['application/json', 'multipart/form-data'],

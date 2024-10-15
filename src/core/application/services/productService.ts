@@ -18,6 +18,8 @@ import { ProductImageRepository } from '@ports/repository/productImageRepository
 import { ProductRepository } from '@ports/repository/productRepository';
 import { ProductCategoryService } from '@services/productCategoryService';
 
+import { DataNotFoundException } from '../exceptions/dataNotFound';
+
 export class ProductService {
 	private readonly productCategoryService;
 
@@ -31,7 +33,7 @@ export class ProductService {
 		productCategoryService: ProductCategoryService,
 		productRepository: ProductRepository,
 		productImageRepository: ProductImageRepository,
-		fileStorage: FileSystemStorage,
+		fileStorage: FileSystemStorage
 	) {
 		this.productCategoryService = productCategoryService;
 		this.productRepository = productRepository;
@@ -45,11 +47,11 @@ export class ProductService {
 			logger.info(`Searching category by name: ${filters.category}`);
 			const productCategory =
 				await this.productCategoryService.getProductCategoryByName(
-					filters.category,
+					filters.category
 				);
 			if (productCategory) {
 				logger.info(
-					`Success search product category ${JSON.stringify(productCategory)}`,
+					`Success search product category ${JSON.stringify(productCategory)}`
 				);
 				return this.productRepository.getProductsByCategory(productCategory.id);
 			}
@@ -58,11 +60,18 @@ export class ProductService {
 		return this.productRepository.getProducts();
 	}
 
+	async getProductById(id: string): Promise<ProductWithDetails> {
+		const paymentOrder: ProductWithDetails | null =
+			await this.productRepository.getProductById(id);
+
+		return paymentOrder;
+	}
+
 	async deleteProducts({ id }: GetProducByIdParams): Promise<void> {
 		const { success } = getProductByIdSchema.safeParse({ id });
 		if (!success) {
 			throw new InvalidProductException(
-				`Error deleting product by Id. Invalid Id: ${id}`,
+				`Error deleting product by Id. Invalid Id: ${id}`
 			);
 		}
 
@@ -83,17 +92,17 @@ export class ProductService {
 	}
 
 	async createProducts(
-		productDto: CreateProductParams,
+		productDto: CreateProductParams
 	): Promise<ProductWithDetails> {
 		const { success } = productSchema.safeParse(productDto);
 		if (!success) {
 			throw new InvalidProductException(
-				"There's a problem with parameters sent, check documentation",
+				"There's a problem with parameters sent, check documentation"
 			);
 		}
 
 		const createdProduct = await this.productRepository.createProducts(
-			productDto,
+			productDto
 		);
 
 		if (productDto.images && productDto.images.length > 0) {
@@ -101,13 +110,13 @@ export class ProductService {
 				productDto.images.map(async (image) => {
 					const imageUrl = await this.fileStorage.saveFile(
 						image,
-						createdProduct.id,
+						createdProduct.id
 					);
 					return this.productImageRepository.createProductImage({
 						url: imageUrl,
 						productId: createdProduct.id,
 					});
-				}),
+				})
 			);
 		}
 
@@ -115,21 +124,25 @@ export class ProductService {
 	}
 
 	async updateProducts(
-		product: UpdateProductParams,
+		product: UpdateProductParams
 	): Promise<ProductWithDetails> {
 		const { success } = updateProductSchema.safeParse(product);
 		if (!success) {
 			throw new InvalidProductException(
-				"There's a problem with parameters sent, check documentation",
+				"There's a problem with parameters sent, check documentation"
 			);
 		}
 
 		const productExists = await this.productRepository.getProductById(
-			product.id,
+			product.id
 		);
 
+		if (!productExists) {
+			throw new DataNotFoundException(`Product with id ${product.id} does not exist`);
+		}
+
 		const hasFilesToSave = product.images?.some(
-			(image) => image.filename.trim().length > 0,
+			(image) => image.filename.trim().length > 0
 		);
 		const hasExistingImages =
 			productExists.images && productExists.images.length > 0;
@@ -166,7 +179,7 @@ export class ProductService {
 					url: imageUrl,
 					productId,
 				});
-			}),
+			})
 		);
 	}
 }

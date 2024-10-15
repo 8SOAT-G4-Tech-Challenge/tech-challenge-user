@@ -1,3 +1,4 @@
+import { OrderStatusEnum } from '@application/enumerations/orderStatusEnum';
 import logger from '@common/logger';
 import { OrderStatusType } from '@domain/types/orderStatusType';
 import { prisma } from '@driven/infra/lib/prisma';
@@ -14,6 +15,11 @@ import { OrderRepository } from '@ports/repository/orderRepository';
 export class OrderRepositoryImpl implements OrderRepository {
 	async getOrders(): Promise<Order[]> {
 		const orders = await prisma.order.findMany({
+			where: {
+				status: {
+					notIn: ['finished', 'canceled'],
+				},
+			},
 			include: {
 				items: {
 					include: {
@@ -144,6 +150,7 @@ export class OrderRepositoryImpl implements OrderRepository {
 				},
 				data: {
 					status: order.status,
+					readableId: order.readableId,
 				},
 			})
 			.catch(() => {
@@ -153,5 +160,31 @@ export class OrderRepositoryImpl implements OrderRepository {
 		logger.info(`Order updated: ${JSON.stringify(updatedOrder)}`);
 
 		return updatedOrder;
+	}
+
+	async getNumberOfValidOrdersToday(): Promise<number> {
+		const startDate = new Date();
+		startDate.setHours(0, 0, 0, 0);
+		const endDate = new Date();
+		endDate.setHours(23, 59, 59);
+
+		const validOrders = await prisma.order.count({
+			where: {
+				createdAt: {
+					gte: startDate,
+					lte: endDate,
+				},
+				status: {
+					notIn: [OrderStatusEnum.created],
+				},
+				readableId: {
+					not: null,
+				}
+			},
+		});
+
+		logger.info(`Number of valid orders today: ${JSON.stringify(validOrders)}`);
+
+		return validOrders;
 	}
 }

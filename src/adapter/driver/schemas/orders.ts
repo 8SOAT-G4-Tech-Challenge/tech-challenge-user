@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { OrderStatusEnum } from '@domain/enums/orderStatusEnum';
+import { OrderStatusEnum } from '@application/enumerations/orderStatusEnum';
 
 export const getOrderByIdSchema = z
 	.object({
@@ -12,5 +12,5 @@ export const updateOrderSchema = z
 	.object({
 		id: z.string(),
 		status: z.nativeEnum(OrderStatusEnum),
-	})
-	.required();
+		readableId: z.string().optional(),
+	});
