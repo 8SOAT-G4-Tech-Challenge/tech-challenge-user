@@ -6,7 +6,6 @@ import logger from '@common/logger';
 import { errorHandler } from '@driver/errorHandler';
 import fastifyCors from '@fastify/cors';
 import helmet from '@fastify/helmet';
-import fastifyMultipart from '@fastify/multipart';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { routes } from '@routes/index';
@@ -22,12 +21,12 @@ app.register(fastifySwagger, {
 		openapi: '3.0.1',
 	},
 	swagger: {
-		consumes: ['application/json', 'multipart/form-data'],
-		produces: ['application/json', 'multipart/form-data'],
+		consumes: ['application/json'],
+		produces: ['application/json'],
 		info: {
-			title: 'FIAP - Tech Challenge',
+			title: 'FIAP - Tech Challenge - Microserviço User',
 			description:
-				'Especificações da API para o back-end da aplicação de restaurante FIAP Tech Challenge.',
+				'Especificações da API do Microserviço User da aplicação de restaurante FIAP Tech Challenge.',
 			version: '1.0.0',
 		},
 	},
@@ -36,8 +35,6 @@ app.register(fastifySwagger, {
 app.register(fastifySwaggerUI, {
 	routePrefix: '/docs',
 });
-
-app.register(fastifyMultipart);
 
 app.register(helmet, {
 	contentSecurityPolicy: {
@@ -66,11 +63,11 @@ async function run() {
 	await app.ready();
 
 	await app.listen({
-		port: Number(process.env.API_PORT) || 3333,
+		port: Number(process.env.API_PORT) || 3334,
 		host: '0.0.0.0',
 	});
 
-	logger.info('Documentation running at http://localhost:3333/docs');
+	logger.info('Documentation running at http://localhost:3334/docs');
 }
 
 run();

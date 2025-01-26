@@ -9,7 +9,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: api-tech-challenge
+    name: api-tech-challenge-sso
   minReplicas: 2
   maxReplicas: 10
   metrics:
