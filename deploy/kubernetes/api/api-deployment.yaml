@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-tech-challenge
+  name: api-tech-challenge-sso
   namespace: tech-challenge-group-4
   labels:
-    app: api-tech-challenge
+    app: api-tech-challenge-sso
 spec:
   replicas: 2
   strategy:
@@ -13,16 +13,16 @@ spec:
       maxUnavailable: 50%
   selector:
     matchLabels:
-      app: api-tech-challenge
+      app: api-tech-challenge-sso
   template:
     metadata:
-      name: api-tech-challenge
+      name: api-tech-challenge-sso
       labels:
-        app: api-tech-challenge
+        app: api-tech-challenge-sso
     spec:
       containers:
-        - name: api-tech-challenge-container
-          image: lucasaccurcio/tech-challenge-api:latest
+        - name: api-tech-challenge-sso-container
+          image: lucasaccurcio/tech-challenge-sso-api:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3333
@@ -36,18 +36,18 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
-              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5432/tech-challenger'
+              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5432/tech-challenge-sso'
           livenessProbe:
             httpGet:
               path: /docs
-              port: 3333
+              port: 3334
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /docs
-              port: 3333
+              port: 3334
             initialDelaySeconds: 10
             periodSeconds: 10
             failureThreshold: 5
