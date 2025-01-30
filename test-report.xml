@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="/home/laccurcio/workspace/tech-challenge-sso/__tests__/unit/core/application/services/userService.test.ts">
+    <testCase name="UserService -&gt; Test getUsers should get all users" duration="8"/>
+    <testCase name="UserService -&gt; Test getUserById should get user by id" duration="8"/>
+    <testCase name="UserService -&gt; Test getUserById should return null if user not found" duration="2"/>
+    <testCase name="UserService -&gt; Test getUserByEmail should get user by email" duration="2"/>
+    <testCase name="UserService -&gt; Test getUserByEmail should return null if user not found" duration="2"/>
+    <testCase name="UserService -&gt; Test createUser should create a new user" duration="6"/>
+    <testCase name="UserService -&gt; Test createUser should throw InvalidUserException if user data is invalid" duration="11"/>
+    <testCase name="UserService -&gt; Test createUser should throw ZodError if password is too short" duration="2"/>
+    <testCase name="UserService -&gt; Test updateUser should update user" duration="2"/>
+    <testCase name="UserService -&gt; Test updateUser should throw InvalidUserException if user update data is invalid" duration="2"/>
+    <testCase name="UserService -&gt; Test deleteUser should delete user" duration="3"/>
+    <testCase name="UserService -&gt; Test deleteUser should throw InvalidUserException if user not found" duration="2"/>
+  </file>
+  <file path="/home/laccurcio/workspace/tech-challenge-sso/__tests__/unit/core/application/services/customerService.test.ts">
+    <testCase name="CustomerService -&gt; Test getCustomers should return all customers" duration="2"/>
+    <testCase name="CustomerService -&gt; Test getCustomerByProperty should return customers by ID" duration="2"/>
+    <testCase name="CustomerService -&gt; Test getCustomerByProperty should return customers by document" duration="1"/>
+    <testCase name="CustomerService -&gt; Test getCustomerByProperty should throw InvalidCustomerException" duration="12"/>
+    <testCase name="CustomerService -&gt; Test createCustomer should throw InvalidCustomerException with customer already exists message" duration="3"/>
+    <testCase name="CustomerService -&gt; Test createCustomer should create customer and return it" duration="2"/>
+    <testCase name="CustomerService -&gt; Test deleteCustomer should throw InvalidCustomerException with customer not found" duration="1"/>
+    <testCase name="CustomerService -&gt; Test deleteCustomer should delete customer" duration="2"/>
+  </file>
+  <file path="/home/laccurcio/workspace/tech-challenge-sso/__tests__/unit/core/application/services/cacheService.test.ts">
+    <testCase name="CacheService -&gt; Test get should not find cache" duration="4"/>
+    <testCase name="CacheService -&gt; Test get should find cache" duration="1"/>
+    <testCase name="CacheService -&gt; Test get should trigger logger error" duration="7"/>
+    <testCase name="CacheService -&gt; Test set should set cache" duration="1"/>
+    <testCase name="CacheService -&gt; Test set should trigger logger error" duration="1"/>
+    <testCase name="CacheService -&gt; Test delete should delete cache" duration="1"/>
+    <testCase name="CacheService -&gt; Test delete should trigger logger error" duration="7"/>
+  </file>
+</testExecutions>

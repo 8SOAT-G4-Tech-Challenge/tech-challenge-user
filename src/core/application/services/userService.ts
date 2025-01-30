@@ -61,10 +61,7 @@ export class UserService {
 	}
 
 	async updateUser(id: string, user: UserUpdateDto): Promise<GetUserResponse> {
-		console.log('id -> ', id);
-		console.log('body -> ', user);
 		const { success } = userUpdateSchema.safeParse(user);
-		console.log('success -> ', success);
 		if (!success || !id) {
 			throw new InvalidUserException(
 				"Can't update user without providing a valid data.",
