@@ -22,7 +22,7 @@ export class UserController {
 			reply.code(StatusCodes.OK).send(users);
 		} catch (error) {
 			const errorMessage = 'Unexpected error when listing for users';
-			logger.error(`${errorMessage}: ${error}`);
+			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -44,8 +44,8 @@ export class UserController {
 			}
 			reply.code(StatusCodes.OK).send(user);
 		} catch (error) {
-			const errorMessage = 'Unexpected error when listing for user by ID';
-			logger.error(`${errorMessage}: ${error}`);
+			const errorMessage = 'Unexpected error when listing user by ID';
+			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -67,8 +67,8 @@ export class UserController {
 			}
 			reply.code(StatusCodes.OK).send(user);
 		} catch (error) {
-			const errorMessage = 'Unexpected error when listing for user by email';
-			logger.error(`${errorMessage}: ${error}`);
+			const errorMessage = 'Unexpected error when listing user by email';
+			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -78,13 +78,14 @@ export class UserController {
 		reply: FastifyReply,
 	) {
 		try {
+			logger.info('Creating user...');
 			const user = req.body;
-			logger.info('Creating user');
 			const createdUser = await this.userService.createUser(user);
+			logger.info(`User created with ID: ${createdUser.id}`);
 			reply.code(StatusCodes.CREATED).send(createdUser);
 		} catch (error) {
 			const errorMessage = 'Unexpected error when creating user';
-			logger.error(`${errorMessage}: ${error}`);
+			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -96,12 +97,12 @@ export class UserController {
 		try {
 			const { id } = req.params;
 			const user = req.body;
-			logger.info(`Updating user by ID: ${id}`);
+			logger.info(`Updating user with ID: ${id}`);
 			const updatedUser = await this.userService.updateUser(id, user);
 			reply.code(StatusCodes.OK).send(updatedUser);
 		} catch (error) {
 			const errorMessage = 'Unexpected error when updating user';
-			logger.error(`${errorMessage}: ${error}`);
+			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -112,12 +113,12 @@ export class UserController {
 	) {
 		try {
 			const { id } = req.params;
-			logger.info(`Deleting user by ID: ${id}`);
+			logger.info(`Deleting user with ID: ${id}`);
 			await this.userService.deleteUser(id);
 			reply.code(StatusCodes.NO_CONTENT).send();
 		} catch (error) {
 			const errorMessage = 'Unexpected error when deleting user';
-			logger.error(`${errorMessage}: ${error}`);
+			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}

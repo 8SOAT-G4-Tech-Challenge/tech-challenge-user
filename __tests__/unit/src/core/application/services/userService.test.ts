@@ -1,8 +1,9 @@
 import { ZodError } from 'zod';
 
-import { UserMockBuilder } from '../../../../__mocks__/user.mock-builder';
-import { InvalidUserException } from '../../../../../src/core/application/exceptions/invalidUserException';
-import { UserService } from '../../../../../src/core/application/services/userService';
+import { UserService } from '@application/services/userService';
+import { InvalidUserException } from '@exceptions/invalidUserException';
+
+import { UserMockBuilder } from '../../../../mocks/user.mock-builder';
 
 describe('UserService -> Test', () => {
 	let service: UserService;

@@ -1,7 +1,10 @@
-import { CustomerMockBuilder } from '../../../../__mocks__/customer.mock-builder';
-import redis from '../../../../../src/adapter/driven/infra/lib/redis';
-import { CacheService } from '../../../../../src/core/application/services/cacheService';
-import logger from '../../../../../src/core/common/logger';
+import { CacheService } from '@application/services/cacheService';
+import logger from '@common/logger';
+import redis from '@driven/infra/lib/redis';
+
+import { CustomerMockBuilder } from '../../../../mocks/customer.mock-builder';
+
+// import logger from '../../../../../src/core/common/logger';
 
 jest.mock('@src/adapter/driven/infra/lib/redis', () => ({
 	get: jest.fn(),
