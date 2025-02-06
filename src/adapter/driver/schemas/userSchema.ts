@@ -15,7 +15,7 @@ export type UserDto = z.infer<typeof userSchema>;
 
 export const userUpdateSchema = z
 	.object({
-		name: z.string(),
+		name: z.string().nullable().optional(),
 		email: z.string().email(),
 		sessionToken: z.string().nullable().optional(),
 		isAdmin: z.boolean(),
