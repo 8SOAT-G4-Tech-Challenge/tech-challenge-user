@@ -3,7 +3,7 @@
 ### Pré-requisitos
 
 - [Docker](https://docs.docker.com/get-docker/);
--	[Kubernetes](https://kubernetes.io/docs/tasks/tools/) - kubectl
+- [Kubernetes](https://kubernetes.io/docs/tasks/tools/) - kubectl
 - [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/) - Opcional
 - [Lens](https://k8slens.dev/) - Kubernetes IDE para visualização dos recursos - Opcional
 
@@ -12,7 +12,7 @@
 **Etapa Opcional - Criação de um Novo Cluster:**:
 
 - **Criar novo Cluster utilizando o Kind:**
-Se você deseja iniciar um novo cluster exclusivo para esta aplicação, siga os passos abaixo - Necessária a instalação do ***Kind***:
+  Se você deseja iniciar um novo cluster exclusivo para esta aplicação, siga os passos abaixo - Necessária a instalação do **_Kind_**:
 
 ```sh
 kind create cluster --config=deploy/kubernetes/config/kind-cluster-config.yaml --name=tech-challenge-cluster
@@ -29,55 +29,66 @@ kubectl cluster-info --context kind-tech-challenge-cluster
 - **Deploy automatizado:**
 
 1. Tonar o script executável:
-	
-	Observação: Usuários Windows poderão utilizar o ***Git Bash***
+
+   Observação: Usuários Windows poderão utilizar o **_Git Bash_**
+
 ```sh
 chmod +x deploy.sh
 ```
 
 2. Executar o arquivo para iniciar o deploy do projeto:
+
 ```sh
 ./deploy.sh
 ```
 
 - **Deploy manual:**
+
 1. Criar o Namespace:
+
 ```sh
 kubectl apply -f deploy/kubernetes/config/namespace-config.yaml
 ```
 
 2. Criar a Secret e ConfigMap
+
 ```sh
 kubectl apply -f deploy/kubernetes/config/secret-config.yaml
 kubectl apply -f deploy/kubernetes/config/env-config.yaml
 ```
 
 3. Aplicar os Volumes Locais para o Banco de Dados:
+
 ```sh
 kubectl apply -f deploy/kubernetes/volume
 ```
 
 4. Subir o serviço de Banco de Dados PostgresSQL (Service, Deployment, HPA):
+
 ```sh
 kubectl apply -f deploy/kubernetes/database
 ```
 
 5. Rodar o Job para criação do banco e tabelas da aplicação:
+
 ```sh
 kubectl apply -f deploy/kubernetes/migration/migration-job.yaml
 ```
 
 6. Subir o serviço da API (Service, Deployment, e HPA)
+
 ```sh
 kubectl apply -f deploy/kubernetes/api
 ```
 
 7. Rodar o Prisma Studio (opcional)
+
 ```sh
 kubectl apply -f deploy/kubernetes/prisma-studio
 ```
 
 - **Acessando os serviços:**
+
 1. Banco de dados:
 
 - Caso tenha feito deploy do Prisma Studio, o banco de dados poderá ser visualizado acessando `http://localhost:31555`
@@ -85,7 +96,7 @@ kubectl apply -f deploy/kubernetes/prisma-studio
 - Se a página estiver indisponível, pode ser necessário redirecionar uma porta para que tenha acesso a aplicação:
 
 ```sh
-kubectl port-forward svc/prisma-studio-service 31555:5555 -n tech-challenge-group-4
+kubectl port-forward svc/prisma-studio-service 31555:5556 -n tech-challenge-group-4
 ```
 
 <br>
@@ -93,13 +104,13 @@ kubectl port-forward svc/prisma-studio-service 31555:5555 -n tech-challenge-grou
 - Para utilizar um programa gerenciador de banco de dados, será necessário redirecionar uma porta para que o programa tenha acesso e consiga se conectar ao banco de dados
 
 ```sh
-kubectl port-forward svc/postgres-service 5432:5432 -n tech-challenge-group-4
+kubectl port-forward svc/postgres-service 5433:5433 -n tech-challenge-group-4
 ```
 
 - Após o comando, a porta estará pronta para receber conexões.
 
 ```
-Host: localhost:5432
+Host: localhost:5433
 Database: tech-challenger
 Username: postgres
 Password: docker
@@ -108,7 +119,7 @@ Password: docker
 2. API
 
 - Para acessar a documentação da API, basta acessar a url:
-`http://127.0.0.1:31333/docs`
+  `http://127.0.0.1:31333/docs`
 
 <br>
 

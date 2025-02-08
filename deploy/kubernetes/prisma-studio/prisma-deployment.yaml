@@ -20,7 +20,7 @@ spec:
           image: lucasaccurcio/tech-challenge-prisma-studio:v2
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5555
+            - containerPort: 5556
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
@@ -28,7 +28,7 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
-              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5432/tech-challenge-sso'
+              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5433/tech-challenge-sso'
           resources:
             requests:
               cpu: 100m

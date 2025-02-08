@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres-sso:
     container_name: tech-challenge-sso-postgres
     image: postgres
     ports:
-      - '5432:5432'
+      - '5433:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: tech-challenge-sso
       PGDATA: '/var/lib/postgresql/data'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data-sso:/var/lib/postgresql/data
     networks:
       - tech-challenge-sso-network
     healthcheck:
@@ -28,10 +28,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3334:3334'
-      - '5555:5555'
+      - '5556:5556'
     env_file: .env
     depends_on:
-      postgres:
+      postgres-sso:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -41,6 +41,7 @@ services:
       API_PORT: 3334
     networks:
       - tech-challenge-sso-network
+      - tech-challenge-global
 
   redis:
     container_name: tech-challenge-sso-redis
@@ -58,6 +59,8 @@ services:
 networks:
   tech-challenge-sso-network:
     driver: bridge
+  tech-challenge-global:
+    external: true
 
 volumes:
-  postgres-data:
+  postgres-data-sso:
