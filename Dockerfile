@@ -36,13 +36,13 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 
 # Define as variáveis de ambiente necessárias
-ENV DATABASE_URL=postgresql://postgres:docker@postgres:5432/tech-challenge-sso
+ENV DATABASE_URL=postgresql://postgres:docker@localhost:5433/tech-challenge-user
 
 # Exposição da porta para API
 EXPOSE 3334
 
 # Exposição da porta para o Prisma Studio
-EXPOSE 5555
+EXPOSE 5556
 
 # Comando para criar banco de dados, iniciar a aplicação e o Prisma Studio
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/adapter/driver/server.js & npx prisma studio"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node dist/adapter/driver/server.js & npx prisma studio"]

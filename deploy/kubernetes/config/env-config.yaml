@@ -7,6 +7,5 @@ metadata:
     name: env-config
 data:
   API_PORT: '3334'
-  POSTGRES_DB: tech-challenge-sso
+  POSTGRES_DB: tech-challenge-user
   POSTGRES_USER: postgres
-

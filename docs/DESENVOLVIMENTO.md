@@ -70,7 +70,7 @@ docker-compose up -d --build
 - Escolha um nome para seu servidor (livre escolha)
 - No menu conexões adicionar as seguintes configurações, conforme docker-compose:
 - Host name/address: localhost
-- Port: 5432
+- Port: 5433
 - Maintenance database: tech-challenger
 - Username: postgres
 - Password: docker

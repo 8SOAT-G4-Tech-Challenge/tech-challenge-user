@@ -24,7 +24,7 @@ spec:
         - name: postgres
           image: postgres:16
           ports:
-            - containerPort: 5432
+            - containerPort: 5433
           envFrom:
             - configMapRef:
                 name: env-config
@@ -35,7 +35,7 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
-              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5432/tech-challenge-sso'
+              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5433/tech-challenge-user'
           readinessProbe:
             exec:
               command:
