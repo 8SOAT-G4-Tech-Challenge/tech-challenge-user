@@ -35,7 +35,7 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
-              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5433/tech-challenge-sso'
+              value: 'postgresql://postgres:$(POSTGRES_PASSWORD)@postgres-service:5433/tech-challenge-user'
           readinessProbe:
             exec:
               command:
