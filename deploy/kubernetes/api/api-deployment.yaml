@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-tech-challenge-sso
+  name: api-tech-challenge-user
   namespace: tech-challenge-group-4
   labels:
-    app: api-tech-challenge-sso
+    app: api-tech-challenge-user
 spec:
   replicas: 2
   strategy:
@@ -13,16 +13,16 @@ spec:
       maxUnavailable: 50%
   selector:
     matchLabels:
-      app: api-tech-challenge-sso
+      app: api-tech-challenge-user
   template:
     metadata:
-      name: api-tech-challenge-sso
+      name: api-tech-challenge-user
       labels:
-        app: api-tech-challenge-sso
+        app: api-tech-challenge-user
     spec:
       containers:
-        - name: api-tech-challenge-sso-container
-          image: lucasaccurcio/tech-challenge-sso-api:latest
+        - name: api-tech-challenge-user-container
+          image: lucasaccurcio/tech-challenge-user-api:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3333
