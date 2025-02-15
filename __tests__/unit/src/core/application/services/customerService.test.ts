@@ -37,7 +37,7 @@ describe('CustomerService -> Test', () => {
 			];
 
 			(mockCustomerRepository.getCustomers as jest.Mock).mockResolvedValue(
-				customers,
+				customers
 			);
 
 			const response = await service.getCustomers();
@@ -57,7 +57,7 @@ describe('CustomerService -> Test', () => {
 			];
 
 			(mockCustomerRepository.getCustomerById as jest.Mock).mockResolvedValue(
-				customers,
+				customers
 			);
 
 			const response = await service.getCustomerByProperty({ id });
@@ -75,26 +75,27 @@ describe('CustomerService -> Test', () => {
 			];
 
 			(mockCustomerRepository.getCustomerByCpf as jest.Mock).mockResolvedValue(
-				customers,
+				customers
 			);
 
 			const response = await service.getCustomerByProperty({ cpf: document });
 
 			expect(mockCustomerRepository.getCustomerByCpf).toHaveBeenCalledWith(
-				document,
+				document
 			);
 			expect(response).toEqual(customers);
 		});
 
 		test('should throw InvalidCustomerException', async () => {
-			const rejectedFunction = async () => {
+			try {
 				await service.getCustomerByProperty({});
-			};
-
-			expect(rejectedFunction()).rejects.toThrow(Error);
-			expect(rejectedFunction()).rejects.toThrow(
-				'An unexpected error occurred while fetching customer: Provide a valid property to perform the search.',
-			);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(Error);
+				expect(error.message).toBe(
+					'An unexpected error occurred while fetching customer: Provide a valid property to perform the search.'
+				);
+			}
 		});
 	});
 
@@ -107,33 +108,32 @@ describe('CustomerService -> Test', () => {
 				.build();
 
 			(mockCustomerRepository.getCustomerByCpf as jest.Mock).mockResolvedValue(
-				customer,
+				customer
 			);
 
-			const rejectedFunction = async () => {
+			try {
 				await service.createCustomer(customer);
-			};
-
-			expect(rejectedFunction()).rejects.toThrow(InvalidCustomerException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'A customer with this CPF already exists.',
-			);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidCustomerException);
+				expect(error.message).toBe('A customer with this CPF already exists.');
+			}
 		});
 
 		test('should create customer and return it', async () => {
 			const customer = new CustomerMockBuilder().withDefaultValues().build();
 
 			(mockCustomerRepository.getCustomerByCpf as jest.Mock).mockResolvedValue(
-				undefined,
+				undefined
 			);
 			(mockCustomerRepository.createCustomer as jest.Mock).mockResolvedValue(
-				customer,
+				customer
 			);
 
 			const response = await service.createCustomer(customer);
 
 			expect(mockCustomerRepository.createCustomer).toHaveBeenCalledWith(
-				customer,
+				customer
 			);
 			expect(response).toEqual(customer);
 		});
@@ -144,36 +144,37 @@ describe('CustomerService -> Test', () => {
 			const customer = new CustomerMockBuilder().withDefaultValues().build();
 
 			(mockCustomerRepository.getCustomerById as jest.Mock).mockResolvedValue(
-				undefined,
+				undefined
 			);
 
-			const rejectedFunction = async () => {
+			try {
 				await service.deleteCustomer(customer);
-			};
-
-			expect(rejectedFunction()).rejects.toThrow(InvalidCustomerException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Customer with ID ${customer.id} not found.`,
-			);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidCustomerException);
+				expect(error.message).toBe(
+					`Customer with ID ${customer.id} not found.`
+				);
+			}
 		});
 
 		test('should delete customer', async () => {
 			const customer = new CustomerMockBuilder().withDefaultValues().build();
 
 			(mockCustomerRepository.getCustomerById as jest.Mock).mockResolvedValue(
-				customer,
+				customer
 			);
 			(mockCustomerRepository.deleteCustomer as jest.Mock).mockResolvedValue(
-				customer,
+				customer
 			);
 
 			const response = await service.deleteCustomer(customer);
 
 			expect(mockCustomerRepository.getCustomerById).toHaveBeenCalledWith(
-				customer.id,
+				customer.id
 			);
 			expect(mockCustomerRepository.deleteCustomer).toHaveBeenCalledWith(
-				customer,
+				customer
 			);
 			expect(response).toEqual(customer);
 		});

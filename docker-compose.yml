@@ -21,7 +21,7 @@ services:
       timeout: 5s
       retries: 5
 
-  api:
+  app:
     container_name: tech-challenge-user-api
     build:
       context: .
