@@ -39,7 +39,7 @@ describe('UserController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith([user]);
-			expect(loggerSpy).toHaveBeenCalledWith('Listing users');
+			expect(loggerSpy).toHaveBeenCalledWith('[USER CONTROLLER] Listing users');
 		});
 
 		test('should fail to list users', async () => {
@@ -56,14 +56,16 @@ describe('UserController -> Test', () => {
 			await controller.getUsers(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when listing for users: {"message":"error"}',
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-users-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-users-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -81,7 +83,9 @@ describe('UserController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith(user);
-			expect(loggerSpy).toHaveBeenCalledWith(`Listing user by ID: ${user.id}`);
+			expect(loggerSpy).toHaveBeenCalledWith(
+				`[USER CONTROLLER] Listing user by ID: ${user.id}`
+			);
 		});
 
 		test('should fail to get user by id', async () => {
@@ -101,14 +105,16 @@ describe('UserController -> Test', () => {
 			await controller.getUserById(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when listing user by ID: {"message":"error"}',
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-user-by-id-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-user-by-id-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 
 		test('should reply 404 when user is not found by id', async () => {
@@ -130,7 +136,7 @@ describe('UserController -> Test', () => {
 				message: 'User not found',
 			});
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Listing user by ID: non-existing-id',
+				'[USER CONTROLLER] Listing user by ID: non-existing-id'
 			);
 		});
 	});
@@ -149,7 +155,7 @@ describe('UserController -> Test', () => {
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith(user);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Listing user by email: ${user.email}`,
+				`[USER CONTROLLER] Listing user by email: ${user.email}`
 			);
 		});
 
@@ -172,7 +178,7 @@ describe('UserController -> Test', () => {
 				message: 'User not found',
 			});
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Listing user by email: non-existing-email@example.com',
+				'[USER CONTROLLER] Listing user by email: non-existing-email@example.com'
 			);
 		});
 
@@ -193,14 +199,16 @@ describe('UserController -> Test', () => {
 			await controller.getUserByEmail(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when listing user by email: {"message":"error"}',
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-user-by-email-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-user-by-email-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -218,9 +226,11 @@ describe('UserController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(201);
 			expect(reply.send).toHaveBeenCalledWith(user);
-			expect(loggerSpy).toHaveBeenCalledWith('Creating user...');
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`User created with ID: ${user.id}`,
+				'[USER CONTROLLER] Creating user...'
+			);
+			expect(loggerSpy).toHaveBeenCalledWith(
+				`[USER CONTROLLER] User created with ID: ${user.id}`
 			);
 		});
 
@@ -241,14 +251,16 @@ describe('UserController -> Test', () => {
 			await controller.createUser(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when creating user: {"message":"error"}',
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/create-user-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/create-user-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -268,7 +280,7 @@ describe('UserController -> Test', () => {
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith(updatedUser);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Updating user with ID: ${user.id}`,
+				`[USER CONTROLLER] Updating user with ID: ${user.id}`
 			);
 		});
 
@@ -290,14 +302,16 @@ describe('UserController -> Test', () => {
 			await controller.updateUser(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when updating user: {"message":"error"}',
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/update-user-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/update-user-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -316,7 +330,7 @@ describe('UserController -> Test', () => {
 			expect(reply.code).toHaveBeenCalledWith(204);
 			expect(reply.send).toHaveBeenCalled();
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Deleting user with ID: ${user.id}`,
+				`[USER CONTROLLER] Deleting user with ID: ${user.id}`
 			);
 		});
 
@@ -337,14 +351,16 @@ describe('UserController -> Test', () => {
 			await controller.deleteUser(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when deleting user: {"message":"error"}',
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/delete-user-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/delete-user-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 });

@@ -14,18 +14,6 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
 		message: error?.message || 'Generic error',
 	};
 
-	if (error instanceof ZodError) {
-		responseError.message = error.errors
-			.map((err) => `${err.path.join('.')}: ${err?.message}`)
-			.join(', ');
-		responseError.status = StatusCodes.BAD_REQUEST;
-	}
-
-	if (error instanceof BaseException) {
-		responseError.message = error?.message;
-		responseError.status = error?.statusCode;
-	}
-
 	reply.status(responseError.status).send(JSON.stringify(responseError));
 };
 
