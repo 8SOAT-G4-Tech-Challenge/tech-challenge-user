@@ -14,6 +14,9 @@ const userController = new UserController(userService);
 const customerController = new CustomerController(customerService);
 
 export const routes = async (fastify: FastifyInstance) => {
+	fastify.get('/health', async (_request, reply) => {
+		reply.status(200).send({ message: 'Health Check User - Ok' });
+	});
 	fastify.get('/admin/users', userController.getUsers.bind(userController));
 	fastify.get(
 		'/admin/users/:id',
