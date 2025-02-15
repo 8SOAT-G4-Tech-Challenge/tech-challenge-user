@@ -1,7 +1,7 @@
 {
-	"name": "tech-challenge-sso",
+	"name": "tech-challenge-user",
 	"version": "1.0.0",
-	"description": "SSO Microservice - API Restaurante FIAP Tech Challenge",
+	"description": "User Microservice - API Restaurante FIAP Tech Challenge",
 	"main": "index.js",
 	"scripts": {
 		"test-coverage": "jest --maxParallel=4 --coverage=true --forceExit --runInBand --detectOpenHandles",

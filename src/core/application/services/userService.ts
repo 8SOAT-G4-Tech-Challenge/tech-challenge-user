@@ -20,21 +20,21 @@ export class UserService {
 	}
 
 	async getUsers(): Promise<GetUserResponse[]> {
-		logger.info('Listing users');
+		logger.info('[USER SERVICE] Listing users');
 		const users: GetUserResponse[] = await this.userRepository.getUsers();
 		return users;
 	}
 
 	async getUserById(id: string): Promise<GetUserResponse | null> {
-		logger.info(`Listing user by ID: ${id}`);
+		logger.info(`[USER SERVICE] Listing user by ID: ${id}`);
 		const user: GetUserResponse | null = await this.userRepository.getUserById(
-			id,
+			id
 		);
 		return user;
 	}
 
 	async getUserByEmail(email: string): Promise<GetUserResponse | null> {
-		logger.info(`Listing user by email: ${email}`);
+		logger.info(`[USER SERVICE] Listing user by email: ${email}`);
 		const user: GetUserResponse | null =
 			await this.userRepository.getUserByEmail(email);
 		return user;
@@ -49,13 +49,13 @@ export class UserService {
 			throw new InvalidUserException('A user with this email already exists.');
 		}
 
-		logger.info('Creating user...');
+		logger.info('[USER SERVICE] Creating user...');
 
 		const createdUser: GetUserResponse = await this.userRepository.createUser(
-			user,
+			user
 		);
 
-		logger.info(`User created with ID: ${createdUser.id}`);
+		logger.info(`[USER SERVICE] User created with ID: ${createdUser.id}`);
 
 		return createdUser;
 	}
@@ -65,15 +65,15 @@ export class UserService {
 		if (!success || !id) {
 			throw new InvalidUserException(
 				"Can't update user without providing a valid data.",
-				StatusCodes.BAD_REQUEST,
+				StatusCodes.BAD_REQUEST
 			);
 		}
 
-		logger.info(`Updating user with ID: ${id}`);
+		logger.info(`[USER SERVICE] Updating user with ID: ${id}`);
 
 		const updatedUser: GetUserResponse = await this.userRepository.updateUser(
 			id,
-			user,
+			user
 		);
 
 		return updatedUser;
@@ -87,7 +87,7 @@ export class UserService {
 			throw new InvalidUserException('User not found.', StatusCodes.NOT_FOUND);
 		}
 
-		logger.info(`Deleting user with ID: ${id}`);
+		logger.info(`[USER SERVICE] Deleting user with ID: ${id}`);
 
 		await this.userRepository.deleteUser(id);
 	}

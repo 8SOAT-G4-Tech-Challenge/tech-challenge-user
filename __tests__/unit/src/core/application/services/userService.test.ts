@@ -104,7 +104,12 @@ describe('UserService -> Test', () => {
 		test('should throw InvalidUserException if user data is invalid', async () => {
 			const userDto = new UserMockBuilder().withInvalidValues().build();
 
-			await expect(service.createUser(userDto)).rejects.toThrow(ZodError);
+			try {
+				await service.createUser(userDto);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(ZodError);
+			}
 		});
 
 		test('should throw ZodError if password is too short', async () => {
@@ -113,7 +118,12 @@ describe('UserService -> Test', () => {
 				.withPassword('123')
 				.build();
 
-			await expect(service.createUser(userDto)).rejects.toThrow(ZodError);
+			try {
+				await service.createUser(userDto);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(ZodError);
+			}
 		});
 	});
 
@@ -128,7 +138,7 @@ describe('UserService -> Test', () => {
 
 			expect(mockUserRepository.updateUser).toHaveBeenCalledWith(
 				user.id,
-				updatedUser,
+				updatedUser
 			);
 			expect(response).toEqual(updatedUser);
 		});
@@ -136,9 +146,12 @@ describe('UserService -> Test', () => {
 		test('should throw InvalidUserException if user update data is invalid', async () => {
 			const userUpdateDto = new UserMockBuilder().withInvalidValues();
 
-			await expect(
-				service.updateUser('some-id', userUpdateDto),
-			).rejects.toThrow(InvalidUserException);
+			try {
+				await service.updateUser('some-id', userUpdateDto);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidUserException);
+			}
 		});
 	});
 
@@ -161,9 +174,12 @@ describe('UserService -> Test', () => {
 
 			mockUserRepository.getUserById.mockResolvedValue(null);
 
-			await expect(service.deleteUser(userId)).rejects.toThrow(
-				InvalidUserException,
-			);
+			try {
+				await service.deleteUser(userId);
+				fail('Expected method to throw an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidUserException);
+			}
 		});
 	});
 });

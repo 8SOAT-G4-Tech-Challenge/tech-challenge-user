@@ -21,12 +21,10 @@ export class CustomerController {
 
 	async getCustomers(req: FastifyRequest, reply: FastifyReply) {
 		try {
-			logger.info('Listing customers');
+			logger.info('[CUSTOMER CONTROLLER] Listing customers');
 			const customers: Customer[] = await this.customerService.getCustomers();
 			reply.code(StatusCodes.OK).send(customers);
 		} catch (error) {
-			const errorMessage = 'Unexpected error when listing for customers';
-			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -54,7 +52,9 @@ export class CustomerController {
 			}
 
 			const searchParam = id ? { id } : { cpf };
-			logger.info(`Listing customers by ${id ? 'ID' : 'CPF'}`);
+			logger.info(
+				`[CUSTOMER CONTROLLER] Listing customers by ${id ? 'ID' : 'CPF'}`
+			);
 			const customer = await this.customerService.getCustomerByProperty(
 				searchParam
 			);
@@ -80,13 +80,11 @@ export class CustomerController {
 		reply: FastifyReply
 	) {
 		try {
-			logger.info('Creating customer');
+			logger.info('[CUSTOMER CONTROLLER] Creating customer');
 			const createdCustomer: CustomerDto =
 				await this.customerService.createCustomer(req.body);
 			reply.code(StatusCodes.CREATED).send(createdCustomer);
 		} catch (error) {
-			const errorMessage = 'Unexpected when creating for customer';
-			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}
@@ -98,12 +96,10 @@ export class CustomerController {
 		const { id } = req.params as { id: string };
 
 		try {
-			logger.info('Deleting customer');
+			logger.info('[CUSTOMER CONTROLLER] Deleting customer');
 			await this.customerService.deleteCustomer({ id });
 			reply.code(200).send({ message: 'Customer successfully deleted' });
 		} catch (error) {
-			const errorMessage = 'Unexpected when deleting for customer';
-			logger.error(`${errorMessage}: ${JSON.stringify(error)}`);
 			handleError(req, reply, error);
 		}
 	}

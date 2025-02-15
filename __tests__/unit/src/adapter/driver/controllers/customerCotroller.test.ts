@@ -37,7 +37,9 @@ describe('CustomerController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith(customer);
-			expect(loggerSpy).toHaveBeenCalledWith('Listing customers');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[CUSTOMER CONTROLLER] Listing customers'
+			);
 		});
 
 		test('should fail to list all customers', async () => {
@@ -54,14 +56,16 @@ describe('CustomerController -> Test', () => {
 			await controller.getCustomers(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when listing for customers: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-customers-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-customers-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -141,14 +145,16 @@ describe('CustomerController -> Test', () => {
 			await controller.getCustomerByProperty(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when listing for customer by property: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-customers-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-customers-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -167,7 +173,9 @@ describe('CustomerController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(201);
 			expect(reply.send).toHaveBeenCalledWith(customer);
-			expect(loggerSpy).toHaveBeenCalledWith('Creating customer');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[CUSTOMER CONTROLLER] Creating customer'
+			);
 		});
 
 		test('should fail to create customer', async () => {
@@ -189,14 +197,16 @@ describe('CustomerController -> Test', () => {
 			await controller.createCustomer(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected when creating for customer: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/create-customers-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/create-customers-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -215,7 +225,9 @@ describe('CustomerController -> Test', () => {
 			expect(reply.send).toHaveBeenCalledWith({
 				message: 'Customer successfully deleted',
 			});
-			expect(loggerSpy).toHaveBeenCalledWith('Deleting customer');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[CUSTOMER CONTROLLER] Deleting customer'
+			);
 		});
 
 		test('should fail to delete customer', async () => {
@@ -237,14 +249,16 @@ describe('CustomerController -> Test', () => {
 			await controller.deleteCustomer(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected when deleting for customer: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/delete-customers-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/delete-customers-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 });

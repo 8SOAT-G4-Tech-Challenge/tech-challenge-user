@@ -1,106 +1,22 @@
-## FIAP Tech-Challenge 8SOAT - Grupo 04
+## FIAP Tech-Challenge 8SOAT - Grupo 04 - Microsserviço de Usuários
 
-### Objetivo do Projeto
+### Introdução
 
-Esta solução tem como objetivo fornecer um sistema de controle de pedidos para uma lanchonete em expansão.
-Através de um totem de autoatendimento, os clientes poderão criar seus próprios pedidos,
-realizar pagamentos de forma integrada e acompanhar o status dos pedidos em tempo real.
-Isso visa otimizar a eficiência no atendimento, reduzir erros e aumentar a satisfação dos clientes,
-suportando o crescimento contínuo da lanchonete.
+Este microsserviço faz parte de um sistema de controle de pedidos para uma lanchonete em expansão. Ele é responsável exclusivamente pelo gerenciamento de usuários e clientes, garantindo um cadastro eficiente e uma busca otimizada utilizando Redis para melhorar a performance das consultas.
 
-### Principais funcionalidades:
+_Para visualizar a documentação geral do projeto, acesse este [repositório](https://github.com/8SOAT-G4-Tech-Challenge/tech-challenge-fiap-documentation)._
 
-- **Interface de Pedido**: Permitir que os clientes façam pedidos personalizados, com a opção de se identificarem ou não, e selecionem itens como lanches, acompanhamentos, bebidas e sobremesas.
-- **Pagamento Integrado**: Facilitar o pagamento dos pedidos via QRCode do Mercado Pago.
-- **Acompanhamento do Pedido**: Exibir o status do pedido em tempo real (Recebido, Em preparação, Pronto, Finalizado) tanto para os clientes quanto para a equipe da cozinha.
+### Objetivo
 
-<details>
-	<summary>
-		<i><b>FASE 01 - DDD, Dockerização e Arquitetura de Software</b></i>
-	</summary>
+Este serviço tem como objetivo gerenciar os usuários e clientes do sistema, permitindo a criação, atualização e recuperação de dados de maneira rápida e eficiente.
 
-### Requerimentos
+A partir dos dados fornecidos, este microsserviço:
 
-- Node versão 20;
-- [Docker](https://docs.docker.com/get-docker/);
-- Docker Compose
+- Gerencia os usuários do sistema, permitindo criação, atualização e listagem por ID e e-mail.
+- Gerencia os clientes da lanchonete, que podem se identificar ao fazer um pedido, permitindo criação, atualização e listagem por ID e CPF.
+- Utiliza o Redis como mecanismo de cache para otimizar buscas de clientes e agilizar a recuperação dos dados.
 
-### Documentação
-
-- Para uma documentação mais detalhada sobre DDD, linguagem ubíqua e event storming, acesse o link do Miro:
-  [Documentação do Projeto](https://miro.com/app/board/uXjVK2WZuMs=/)
-
-### Diagrama do Banco de Dados
-
-- [Diagrama ER](https://miro.com/app/board/uXjVK0gj0bg=/)
-
-### Execução
-
-Para executar a aplicação siga a seguinte [documentação](docs/INSTALACAO.md), que possui todos os passos para iniciar e executar a aplicação localmente.
-
-### Desenvolvimento
-
-Para realizar o desenvolvimento de novas features é importante fazer as configurações descritas na [documentação](docs/DESENVOLVIMENTO.md).
-
-### Endpoints
-
-Esta API fornece documentação no padrão OpenAPI através do Swagger.
-Os endpoints disponíveis, suas descrições e dados necessários para requisição podem ser consultados e testados em `/docs`.
-
-### Melhorias e implementações futuras:
-
-- **Gerenciamento de Clientes e Produtos**: Permitir ao estabelecimento gerenciar campanhas promocionais, produtos e categorias através de um painel administrativo.
-
-</details>
-
-<details>
-	<summary>
-		<i><b>FASE 02 - Kubernetes e Clean Architecture</b></i>
-	</summary>
-
-### Deploy da aplicação em ambiente local com Kubernetes:
-
-Para executar o deploy da aplicação siga a seguinte [documentação](docs/DEPLOY.md), que possui todos os passos para iniciar e executar a aplicação localmente.
-
-### Desenho da infra-estrutura local da aplicação:
-
-![local](https://github.com/user-attachments/assets/77555751-c388-46b6-9e79-260dfd98e104)
-
-### Desenho da infra-estrutura utilizando serviços de Cloud (To be):
-
-![aws_cloud](https://github.com/user-attachments/assets/21b13369-caea-438a-ae8e-3ba085b4888e)
-
-### Vídeo de apresentação do projeto
-
-- [Tech challenge - Grupo 4 - Fase 2](https://youtu.be/gasm0z2YOBg)
-
-</details>
-
-<details>
-	<summary>
-		<i><b>FASE 03 - AWS Cloud e Terraform</b></i>
-	</summary>
-
-### Requerimentos
-
-- Node versão 20;
-- KubeCTL
-- AWS CLI
-- Terraform
-
-### Desenho da infraestrutura Cloud
-
-[Desenho Arquitetura drawio](https://drive.google.com/file/d/1y7T1N6wRgpz-XEwMXWtzjVsCxz71yy1p/view?usp=sharing)
-
-![Desenho Arquitetura drawio](https://github.com/user-attachments/assets/0f953ddc-52e4-4467-b566-e5f984addd6f)
-
-### Execução
-
-Para executar a aplicação siga a seguinte [documentação](docs/FASE-3.md), que possui todos os passos para iniciar e executar a aplicação localmente.
-
-</details>
-
-### Participantes do Projeto
+### Participantes
 
 - Amanda Maschio - RM 357734
 - Jackson Antunes - RM357311
