@@ -6,6 +6,7 @@
 	"scripts": {
 		"test-coverage": "jest --maxParallel=4 --coverage=true --forceExit --runInBand --detectOpenHandles",
 		"test": "jest --maxWorkers=1 --coverage=true",
+		"test:bdd": "cucumber-js",
 		"build": "tsup src",
 		"dev": "tsx watch --env-file .env -r tsconfig-paths/register src/adapter/driver/server.ts | pino-pretty -C",
 		"dev:no-env": "tsx watch -r tsconfig-paths/register src/adapter/driver/server.ts",
@@ -40,6 +41,7 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
+		"@cucumber/cucumber": "^11.2.0",
 		"@types/jest": "^29.5.14",
 		"@types/node": "^20.14.10",
 		"@types/pino": "^7.0.5",
@@ -54,6 +56,7 @@
 		"pino-pretty": "^11.2.2",
 		"prisma": "^5.17.0",
 		"ts-jest": "^29.2.5",
+		"ts-node": "^10.9.2",
 		"tsup": "^8.1.0",
 		"tsx": "^4.16.2",
 		"typescript": "^5.5.3"

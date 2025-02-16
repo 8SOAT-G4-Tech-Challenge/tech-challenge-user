@@ -5,7 +5,7 @@ module.exports = {
 	transform: {
 		'^.+.tsx?$': ['ts-jest', {}],
 	},
-	testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+	testMatch: ['**/?(*.)+(spec|test|step).[jt]s?(x)'],
 	collectCoverageFrom: [
 		'src/**/*.ts',
 		'!src/uploads',
