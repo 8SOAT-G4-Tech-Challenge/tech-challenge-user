@@ -16,6 +16,15 @@ A partir dos dados fornecidos, este microsserviço:
 - Gerencia os clientes da lanchonete, que podem se identificar ao fazer um pedido, permitindo criação, atualização e listagem por ID e CPF.
 - Utiliza o Redis como mecanismo de cache para otimizar buscas de clientes e agilizar a recuperação dos dados.
 
+### Endpoints
+
+Esta API fornece documentação no padrão OpenAPI através do Swagger.
+Os endpoints disponíveis, suas descrições e dados necessários para requisição podem ser consultados e testados em `/docs`.
+
+### Desenvolvimento
+
+Para realizar o desenvolvimento de novas features, é importante realizar as configurações descritas na [Documentação de desenvolvimento](https://github.com/8SOAT-G4-Tech-Challenge/tech-challenge-fiap-documentation/blob/master/docs/DESENVOLVIMENTO.md).
+
 ### Participantes
 
 - Amanda Maschio - RM 357734
